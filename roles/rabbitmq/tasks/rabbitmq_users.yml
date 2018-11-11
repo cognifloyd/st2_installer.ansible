@@ -18,7 +18,7 @@
   rabbitmq_user:
     user: "{{ _rmq_user }}"
     state: absent
-  with_items: "{{ rabbitmq_absent_users }}"
+  loop: "{{ rabbitmq_absent_users }}"
   tags: rabbitmq
 
 - name: Add RabbitMQ Users
@@ -34,5 +34,5 @@
   loop_control:
     loop_var: _rmq_user
     label: "{{ _rmq_user.user }}"
-  with_items: "{{ rabbitmq_users }}"
+  loop: "{{ rabbitmq_users }}"
   tags: rabbitmq

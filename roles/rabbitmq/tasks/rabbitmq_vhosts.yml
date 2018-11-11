@@ -6,7 +6,7 @@
     state: absent
   loop_control:
     loop_var: _rmq_vhost
-  with_items: "{{ rabbitmq_absent_vhosts }}"
+  loop: "{{ rabbitmq_absent_vhosts }}"
   tags: rabbitmq
 
 - name: Add RabbitMQ vhosts
@@ -16,5 +16,5 @@
     state: present
   loop_control:
     loop_var: _rmq_vhost
-  with_items: "{{ rabbitmq_vhosts }}"
+  loop: "{{ rabbitmq_vhosts }}"
   tags: rabbitmq
