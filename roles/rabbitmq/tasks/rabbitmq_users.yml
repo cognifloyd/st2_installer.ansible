@@ -23,17 +23,11 @@
 
 - name: Add RabbitMQ Users
   become: yes
-  rabbitmq_user:
-    force: "{{ rabbitmq_force_user_recreate|default(omit) }}"
-    # NOTE: This does not handle erlang nodes other than "rabbit" (when is that even used?)
-    user: "{{ _rmq_user.user }}"
-    password: "{{ _rmq_user.password }}"
-    permissions: "{{ _rmq_user.permissions }}"
-    tags: "{{ _rmq_user.tags | default(omit) }}"
-    state: present
+  include_tasks: rabbitmq_user.yml
   loop_control:
     loop_var: _rmq_user
-    label: "{{ _rmq_user.user }}"
   loop: "{{ rabbitmq_users }}"
-  no_log: "{{ ansible_verbosity > 1 }}" # password revealed in more verbose modes
+  # using loop_control: label does not obscure the password in output for verbosity > 1
+  # So, loop over an include where the task name will include the user name, but the loop var won't print out.
+  no_log: yes
   tags: rabbitmq

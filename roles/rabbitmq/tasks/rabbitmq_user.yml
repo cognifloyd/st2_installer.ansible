@@ -1,0 +1,12 @@
+---
+- name: "Add RabbitMQ User - {{ _rmq_user.user }}"
+  become: yes
+  rabbitmq_user:
+    force: "{{ rabbitmq_force_user_recreate|default(omit) }}"
+    # NOTE: This does not handle erlang nodes other than "rabbit" (when is that even used?)
+    user: "{{ _rmq_user.user }}"
+    password: "{{ _rmq_user.password }}"
+    permissions: "{{ _rmq_user.permissions }}"
+    tags: "{{ _rmq_user.tags | default(omit) }}"
+    state: present
+  tags: rabbitmq
