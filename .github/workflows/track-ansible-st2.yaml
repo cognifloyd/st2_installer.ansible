@@ -1,0 +1,40 @@
+---
+name: track-ansible-st2
+on:
+  schedule:
+    - cron: '0 8 * * *' # UTC
+jobs:
+  track-and-merge-from-ansible-st2:
+    runs-on: ubuntu-latest
+    name: Update tracking and merge branches from StackStorm/ansible-st2:master
+    steps:
+      - name: Checkout ansible-st2-tracking
+        uses: actions/checkout@v2
+        with:
+          ref: ansible-st2-tracking
+
+      - name: Pull changes from StackStorm/ansible-st2
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v1
+        with:
+          upstream_repository: StackStorm/ansible-st2
+          upstream_branch: master
+          target_branch: ansible-st2-tracking
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge ansible-st2-tracking and ansible-st2-staging branches
+        if: steps.sync.outputs.has_new_commits
+        # staging has very basic modifications to simplify the later merge
+        uses: tukasz/direct-merge-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: ansible-st2-tracking
+          target-branch: ansible-st2-staging
+
+      - name: Create PR from ansible-st2-staging to ansible-st2-merge for manual review
+        if: steps.sync.outputs.has_new_commits
+        uses: sudoStatus200/create-sync-pr@0.3.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_BRANCH: ansible-st2-staging
+          TARGET_BRANCH: ansible-st2-merge
