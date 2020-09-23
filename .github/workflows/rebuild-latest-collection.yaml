@@ -1,0 +1,49 @@
+---
+# inspired by public_collection workflow in community.mongodb
+name: Re-build and re-release latest collection artifact
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  rebuild_latest:
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout st2_installer collection
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install requirements with pip
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            https://github.com/ansible/ansible/archive/devel.tar.gz
+
+      - name: Build st2_installer collection
+        run: ansible-galaxy collection build
+
+      - name: Rename the build artifact
+        run: mv ${{ github.repository_owner }}-st2_installer-*.tar.gz ${{ github.repository_owner }}-st2_installer-latest.tar.gz
+
+      - name: Upload latest collection as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.repository_owner }}-st2_installer-latest
+          path: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
+
+      - name: Update latest release tag with new artifact
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
+          asset_name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
+          tag: latest
+          overwrite: true
