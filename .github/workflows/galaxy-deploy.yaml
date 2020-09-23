@@ -1,0 +1,19 @@
+---
+name: Deploy tag to galaxy.ansible.com
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '!latest'
+jobs:
+  galaxy_deploy:
+    runs-on: ubuntu-latest
+    name: Build each tag as a collection and push to galaxy.ansible.com
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v2
+
+      - name: Deploy the collection
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: ${{ secrets.GALAXY_API_KEY }}
