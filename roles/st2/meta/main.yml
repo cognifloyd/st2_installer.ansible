@@ -22,6 +22,6 @@ galaxy_info:
     - remediation
     - devops
 dependencies:
-  - role: StackStorm.epel
+  - role: cognifloyd.st2_installer.epel
     when: ansible_facts.os_family == 'RedHat'
-  - role: StackStorm.st2repo
+  - role: cognifloyd.st2_installer.st2repo
