@@ -1,0 +1,60 @@
+---
+driver:
+  name: docker
+  privileged: true
+  use_sudo: false
+
+transport:
+  name: sftp
+
+provisioner:
+  name: ansible_playbook
+  hosts: all
+  roles_path: roles
+  ansible_verbose: true
+  ansible_verbosity: 2
+  idempotency_test: true
+  extra_vars:
+    st2repo_name: <%= ENV['ST2_REPO'] || 'stable' %>
+    ewc_repo: <%= ENV['EWC_REPO'] || 'enterprise' %>
+    ewc_license: "<%= ENV['LICENSE'] ? ENV[ENV['LICENSE']] : ENV['BWC_LICENSE_ENTERPRISE'] %>"
+    st2chatops_hubot_adapter: slack
+    st2chatops_config:
+      HUBOT_SLACK_TOKEN: <%= ENV['HUBOT_SLACK_TOKEN'] %>
+
+platforms:
+  # Ubuntu Xenial with Systemd
+  - name: ubuntu-16.04
+    driver_config:
+      image: stackstorm/packagingtest:xenial-systemd
+      platform: ubuntu
+      run_command: /sbin/init
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  # Ubuntu Bionic with Systemd
+  - name: ubuntu-18.04
+    driver_config:
+      image: stackstorm/packagingtest:bionic-systemd
+      platform: ubuntu
+      run_command: /sbin/init
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  # CentOS7 with Systemd
+  - name: centos-7
+    driver_config:
+      platform: centos
+      dockerfile: .kitchen-docker/centos7/Dockerfile
+      run_command: /sbin/init
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  # CentOS8 with Systemd
+  - name: centos-8
+    driver_config:
+      platform: centos
+      dockerfile: .kitchen-docker/centos8/Dockerfile
+      run_command: /sbin/init
+      volume:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+suites:
+  - name: default
