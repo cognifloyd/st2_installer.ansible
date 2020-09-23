@@ -3,6 +3,7 @@ name: track-ansible-st2
 on:
   schedule:
     - cron: '0 8 * * *' # UTC
+  workflow_dispatch:
 jobs:
   track-and-merge-from-ansible-st2:
     runs-on: ubuntu-latest
