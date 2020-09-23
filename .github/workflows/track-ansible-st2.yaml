@@ -15,7 +15,7 @@ jobs:
 
       - name: Pull changes from StackStorm/ansible-st2
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v1
+        uses: aormsby/Fork-Sync-With-Upstream-action@v1.1
         with:
           upstream_repository: StackStorm/ansible-st2
           upstream_branch: master
@@ -23,7 +23,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge ansible-st2-tracking and ansible-st2-staging branches
-        if: steps.sync.outputs.has_new_commits
+        if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
         # staging has very basic modifications to simplify the later merge
         uses: tukasz/direct-merge-action@v1
         with:
@@ -32,7 +32,7 @@ jobs:
           target-branch: ansible-st2-staging
 
       - name: Create PR from ansible-st2-staging to ansible-st2-merge for manual review
-        if: steps.sync.outputs.has_new_commits
+        if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
         uses: sudoStatus200/create-sync-pr@0.3.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
