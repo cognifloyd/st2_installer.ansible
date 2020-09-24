@@ -52,7 +52,7 @@
 
 - name: Add RabbitMQ plugins
   become: yes
-  rabbitmq_plugin:
+  community.rabbitmq.rabbitmq_plugin:
     names: "{{ rabbitmq_plugins|join(',') }}"
     state: enabled
     # new_only: no = Remove all plguins that aren't listed in rabbitmq_plugins
