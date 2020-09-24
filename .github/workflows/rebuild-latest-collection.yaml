@@ -54,5 +54,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
           asset_name: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
+          body: "This is a development release of the tip (head) of the main branch."
           tag: tip
           overwrite: true
