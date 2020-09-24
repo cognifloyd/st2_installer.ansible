@@ -39,11 +39,20 @@ jobs:
           name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
           path: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
 
-      - name: Move the latest git tag
-        uses: weareyipyip/walking-tag-action@v2
+      #- name: Move the latest git tag
+      #  uses: weareyipyip/walking-tag-action@v2
+      #  with:
+      #    tag-name: latest
+      #    tag-message: The tip of the main branch (development)
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Moving the tag leaves an orphan ortifact. Just changing the artifact doesn't move the tag.
+      - name: Delete latest tag and release (so that it maatches the tip of main)
+        uses: dev-drprasad/delete-tag-and-release@v0.1.2
         with:
-          tag-name: latest
-          tag-message: The tip of the main branch (development)
+          delete_release: true
+          tag_name: latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
