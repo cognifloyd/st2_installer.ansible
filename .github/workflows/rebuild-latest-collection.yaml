@@ -1,6 +1,6 @@
 ---
 # inspired by public_collection workflow in community.mongodb
-name: Re-build and re-release latest collection artifact
+name: Re-build and re-release tip collection artifact
 on:
   workflow_dispatch:
   push:
@@ -31,36 +31,28 @@ jobs:
         run: ansible-galaxy collection build
 
       - name: Rename the build artifact
-        run: mv ${{ github.repository_owner }}-st2_installer-*.tar.gz ${{ github.repository_owner }}-st2_installer-latest.tar.gz
+        run: mv ${{ github.repository_owner }}-st2_installer-*.tar.gz ${{ github.repository_owner }}-st2_installer-tip.tar.gz
 
-      - name: Upload latest collection as an artifact
+      - name: Upload tip collection as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
-          path: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
-
-      #- name: Move the latest git tag
-      #  uses: weareyipyip/walking-tag-action@v2
-      #  with:
-      #    tag-name: latest
-      #    tag-message: The tip of the main branch (development)
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
+          path: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
 
       # Moving the tag leaves an orphan ortifact. Just changing the artifact doesn't move the tag.
-      - name: Delete latest tag and release (so that it maatches the tip of main)
+      - name: Delete tip tag and release (so that it maatches the tip of main)
         uses: dev-drprasad/delete-tag-and-release@v0.1.2
         with:
           delete_release: true
-          tag_name: latest
+          tag_name: tip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update latest release tag with new artifact
+      - name: Update tip release tag with new artifact
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
-          asset_name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
-          tag: latest
+          file: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
+          asset_name: ${{ github.repository_owner }}-st2_installer-tip.tar.gz
+          tag: tip
           overwrite: true
