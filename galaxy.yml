@@ -3,6 +3,8 @@
 # content lives. May only contain alphanumeric lowercase characters and underscores. Namespaces cannot start with
 # underscores or numbers and cannot contain consecutive underscores
 namespace: cognifloyd
+# WARNING: If you change the namespace, be sure to replace the namespace usage in all the roles
+#          For example, dependencies in <role>/meta/main.yml
 
 # The name of the collection. Has the same character restrictions as 'namespace'
 name: st2_installer
