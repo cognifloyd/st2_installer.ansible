@@ -36,7 +36,7 @@ jobs:
       - name: Upload latest collection as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.repository_owner }}-st2_installer-latest
+          name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
           path: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
 
       - name: Update latest release tag with new artifact
