@@ -22,4 +22,4 @@ galaxy_info:
     - remediation
     - devops
 dependencies:
-  - role: cognifloyd.st2_installer.st2repo
+  - role: st2repo

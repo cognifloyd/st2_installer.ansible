@@ -18,5 +18,5 @@ galaxy_info:
   galaxy_tags:
     - system
 dependencies:
-  - role: cognifloyd.st2_installer.st2repo
-  - role: cognifloyd.st2_installer.st2
+  - role: st2repo
+  - role: st2
