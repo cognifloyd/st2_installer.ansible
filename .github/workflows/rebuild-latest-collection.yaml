@@ -39,6 +39,14 @@ jobs:
           name: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
           path: ${{ github.repository_owner }}-st2_installer-latest.tar.gz
 
+      - name: Move the latest git tag
+        uses: weareyipyip/walking-tag-action@v2
+        with:
+          tag-name: latest
+          tag-message: The tip of the main branch (development)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update latest release tag with new artifact
         uses: svenstaro/upload-release-action@v2
         with:
