@@ -1,0 +1,46 @@
+---
+- name: Install MongoDB Repository
+  include_role:
+    name: community.mongodb.mongodb_repository
+    apply:
+      tags: [databases, mongodb]
+      become: yes
+  tags: [databases, mongodb]
+
+- name: Install and configure mongod
+  include_role:
+    name: community.mongodb.mongodb_mongod
+    apply:
+      tags: [databases, mongodb]
+      become: yes
+  vars:
+    # TODO: This role assumes an all-in-one installation
+    bind_ip: 127.0.0.1
+    replicaset: false
+    sharding: false
+    authorization: "enabled"
+  tags: [databases, mongodb]
+
+- name: Install python stuff
+  package:
+    name: "python{% if needs_3 %}3{% endif %}-pip"
+  vars:
+    needs_3: "{{ ansible_facts.python.version.major == 3 }}"
+  tags: [databases, mongodb, pip]
+
+- name: Install pymongo (for the mongodb_user module)
+  # Use pip because system packages are too old for adequate mongodb support.
+  # https://docs.mongodb.com/drivers/pymongo#mongodb-compatibility
+  become: yes
+  pip:
+    name: "pymongo>=3.10.1,<4.0.0"
+  tags: [databases, mongodb]
+
+- name: Configure mongod authentication and add users
+  include_role:
+    name: community.mongodb.mongodb_auth
+    apply:
+      tags: [databases, mongodb]
+      become: yes
+  tags: [databases, mongodb]
+
