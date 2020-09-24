@@ -1,0 +1,35 @@
+---
+- name: Install StackStorm (st2)
+  hosts: "{{ st2_hosts | default('all') }}"
+  environment: "{{ st2_proxy_env | default({}) }}"
+  roles:
+    - name: Mongo | Main DB for StackStorm
+      role: cognifloyd.st2_installer.mongodb
+
+    - name: RabbitMQ | Message Broker for StackStorm
+      role: cognifloyd.st2_installer.rabbitmq
+
+    - name: EPEL | Add EPEL repo to RHEL/CentOS
+      role: cognifloyd.st2_installer.epel
+      when: ansible_facts.os_family == 'RedHat'
+
+    - name: ST2 | Add StackStorm PackageCloud repositories
+      role: cognifloyd.st2_installer.st2repo
+
+    - name: ST2 | Install and configure StackStorm (st2)
+      role: cognifloyd.st2_installer.st2
+
+    - name: Nginx | Access point for st2web
+      role: cognifloyd.st2_installer.nginx
+
+    - name: ST2 | Install st2web
+      role: cognifloyd.st2_installer.st2web
+
+    - name: Node.js | Install node.js for st2chatops
+      role: cognifloyd.st2_installer.st2chatops
+
+    - name: ST2 | Install st2chatops and a hubot adapter
+      role: cognifloyd.st2_installer.st2chatops
+
+    - name: ST2 | Verify StackStorm installation
+      role: cognifloyd.st2_installer.st2smoketests
