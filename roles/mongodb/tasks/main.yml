@@ -22,11 +22,12 @@
       tags: [databases, mongodb]
       become: yes
   vars:
-    # TODO: This role assumes an all-in-one installation
-    bind_ip: 127.0.0.1
-    replicaset: false
-    sharding: false
-    authorization: "enabled"
+    # assume all in one by default
+    bind_ip: "{{ mongodb_bind_ip | default('127.0.0.1') }}"
+    mongod_port: "{{ mongodb_port | default(27017) }}"
+    replicaset: "{{ mongodb_replicaset | default(false) }}"
+    sharding: "{{ mongodb_sharding | default(false) }}"
+    authorization: "{{ mongodb_authorization | default('enabled') }}"
   tags: [databases, mongodb]
 
 - name: Install python stuff
