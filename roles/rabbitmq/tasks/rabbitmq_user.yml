@@ -1,6 +1,5 @@
 ---
 - name: "Add RabbitMQ User - {{ _rmq_user.user }}"
-  become: yes
   community.rabbitmq.rabbitmq_user:
     force: "{{ rabbitmq_force_user_recreate|default(omit) }}"
     # NOTE: This does not handle erlang nodes other than "rabbit" (when is that even used?)

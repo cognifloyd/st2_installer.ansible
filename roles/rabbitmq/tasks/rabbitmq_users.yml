@@ -22,8 +22,10 @@
   tags: rabbitmq
 
 - name: Add RabbitMQ Users
-  become: yes
-  include_tasks: rabbitmq_user.yml
+  include_tasks:
+    file: rabbitmq_user.yml
+    apply:
+      become: yes
   loop_control:
     loop_var: _rmq_user
   loop: "{{ rabbitmq_users }}"
