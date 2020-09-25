@@ -2,6 +2,10 @@
 - name: Install StackStorm (st2)
   hosts: "{{ st2_hosts | default('all') }}"
   environment: "{{ st2_proxy_env | default({}) }}"
+  collections:
+    - cognifloyd.st2_installer
+    - community.mongodb
+    - community.rabbitmq
 
   pre_tasks:
     - name: Make sure st2_config auth variables are configured
@@ -48,32 +52,32 @@
 
   roles:
     - name: Mongo | Main DB for StackStorm
-      role: cognifloyd.st2_installer.mongodb
+      role: mongodb
 
     - name: RabbitMQ | Message Broker for StackStorm
-      role: cognifloyd.st2_installer.rabbitmq
+      role: rabbitmq
 
     - name: EPEL | Add EPEL repo to RHEL/CentOS
-      role: cognifloyd.st2_installer.epel
+      role: epel
       when: ansible_facts.os_family == 'RedHat'
 
     - name: ST2 | Add StackStorm PackageCloud repositories
-      role: cognifloyd.st2_installer.st2repo
+      role: st2repo
 
     - name: ST2 | Install and configure StackStorm (st2)
-      role: cognifloyd.st2_installer.st2
+      role: st2
 
     - name: Nginx | Access point for st2web
-      role: cognifloyd.st2_installer.nginx
+      role: nginx
 
     - name: ST2 | Install st2web
-      role: cognifloyd.st2_installer.st2web
+      role: st2web
 
     - name: Node.js | Install node.js for st2chatops
-      role: cognifloyd.st2_installer.st2chatops
+      role: st2chatops
 
     - name: ST2 | Install st2chatops and a hubot adapter
-      role: cognifloyd.st2_installer.st2chatops
+      role: st2chatops
 
     - name: ST2 | Verify StackStorm installation
-      role: cognifloyd.st2_installer.st2smoketests
+      role: st2smoketests
