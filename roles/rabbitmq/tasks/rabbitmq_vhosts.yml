@@ -1,7 +1,7 @@
 ---
 - name: Remove RabbitMQ vhosts
   become: yes
-  rabbitmq_vhost:
+  community.rabbitmq.rabbitmq_vhost:
     vhost: "{{ _rmq_vhost }}"
     state: absent
   loop_control:
@@ -11,7 +11,7 @@
 
 - name: Add RabbitMQ vhosts
   become: yes
-  rabbitmq_vhost:
+  community.rabbitmq.rabbitmq_vhost:
     vhost: "{{ _rmq_vhost }}"
     state: present
   loop_control:

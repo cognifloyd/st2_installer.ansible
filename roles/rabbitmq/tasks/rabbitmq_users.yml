@@ -7,7 +7,7 @@
 
 - name: Remove the guest user from RabbitMQ
   become: yes
-  rabbitmq_user:
+  community.rabbitmq.rabbitmq_user:
     user: guest
     state: absent
   when: not rabbitmq_keep_guest_user
@@ -15,7 +15,7 @@
 
 - name: Remove other users from RabbitMQ
   become: yes
-  rabbitmq_user:
+  community.rabbitmq.rabbitmq_user:
     user: "{{ _rmq_user }}"
     state: absent
   loop: "{{ rabbitmq_absent_users }}"
