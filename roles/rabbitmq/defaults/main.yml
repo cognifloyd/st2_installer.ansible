@@ -4,17 +4,12 @@ rabbitmq_plugins: []
 #rabbitmq_plugins:
 #  - rabbitmq_management
 
-# the map filter is only available in Jinja 2.7, but CentOS 6 only has Jinja 2.6.
-#rabbitmq_vhosts: "{{ lookup('flattened', rabbitmq_users|map(attribute='permissions')|list ) | map(attribute='vhost')|list|unique }}"
-# Make sure to include an entry for every vhost listed in rabbitmq_users.*.permissions
-rabbitmq_vhosts: []
-# - st2
+# If changing the default, make sure to include an entry for every vhost listed in rabbitmq_users.*.permissions
+rabbitmq_vhosts: "{{ lookup('flattened', rabbitmq_users|map(attribute='permissions')|list ) | map(attribute='vhost')|list|unique }}"
 rabbitmq_absent_vhosts: []
 
-# the map filter is only available in Jinja 2.7, but CentOS 6 only has Jinja 2.6.
-#rabbitmq_keep_guest_user_default: "{{ (rabbitmq_users|length > 0) and ('guest' not in rabbitmq_users|map(attribute='user')) }}"
 # other roles can change the default while allowing the end user to still override the value.
-rabbitmq_keep_guest_user_default: yes
+rabbitmq_keep_guest_user_default: "{{ (rabbitmq_users|length > 0) and ('guest' not in rabbitmq_users|map(attribute='user')) }}"
 rabbitmq_keep_guest_user: "{{ rabbitmq_keep_guest_user_default }}"
 
 rabbitmq_users: []
