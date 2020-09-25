@@ -35,7 +35,7 @@
     name: "python{% if needs_3 %}3{% endif %}-pip"
   vars:
     needs_3: "{{ ansible_facts.python.version.major == 3 }}"
-  zags: [databases, mongodb, pip]
+  tags: [databases, mongodb, pip]
 
 - name: Install pymongo (for the mongodb_user module)
   # Use pip because system packages are too old for adequate mongodb support.
