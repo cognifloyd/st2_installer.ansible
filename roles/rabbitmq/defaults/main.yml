@@ -7,6 +7,8 @@ rabbitmq_plugins: []
 # If changing the default, make sure to include an entry for every vhost listed in rabbitmq_users.*.permissions
 rabbitmq_vhosts: "{{ lookup('flattened', rabbitmq_users|map(attribute='permissions')|list ) | map(attribute='vhost')|list|unique }}"
 rabbitmq_absent_vhosts: []
+# vhost is either '/' or the encoded version of everything after the '/'
+# an empty string != '/' which would need to be encoded as %2F
 
 # other roles can change the default while allowing the end user to still override the value.
 rabbitmq_keep_guest_user_default: "{{ (rabbitmq_users|length > 0) and ('guest' not in rabbitmq_users|map(attribute='user')) }}"
