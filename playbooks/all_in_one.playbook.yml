@@ -76,7 +76,7 @@
       role: st2web
 
     - name: Node.js | Install node.js for st2chatops
-      role: st2chatops
+      role: nodejs
 
     - name: ST2 | Install st2chatops and a hubot adapter
       role: st2chatops
