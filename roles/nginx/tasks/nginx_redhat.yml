@@ -1,9 +1,15 @@
 ---
 - name: Install vars
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
-    - "{{ ansible_facts.os_family | lower }}.yml"
+  include_vars:
+    file: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      paths:
+        - "vars"
+      files:
+        - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
+        - "{{ ansible_facts.os_family | lower}}.yml"
+  tags: nginx
 
 - name: Add nginx key
   become: yes
