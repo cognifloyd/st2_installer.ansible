@@ -53,7 +53,8 @@ jobs:
 
       - name: Create PR from ansible-st2-staging to ansible-st2-merge for manual review
         if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
-        uses: sudoStatus200/create-sync-pr@0.3.1
+        # uses: sudoStatus200/create-sync-pr@0.3.1
+        uses: cognifloyd/create-sync-pr@use-source-branch
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_BRANCH: ansible-st2-staging
