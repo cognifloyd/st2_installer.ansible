@@ -53,6 +53,7 @@ jobs:
           target-branch: ansible-st2-staging
 
       - name: Create PR from ansible-st2-staging to ansible-st2-merge for manual review
+        id: pr
         if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
         # uses: sudoStatus200/create-sync-pr@0.3.1
         uses: cognifloyd/create-sync-pr@use-source-branch
@@ -60,3 +61,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_BRANCH: ansible-st2-staging
           TARGET_BRANCH: ansible-st2-merge
+
+      - name: Merge ansible-st2-merge into PR branch
+        if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
+        uses: tukasz/direct-merge-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: ansible-st2-merge
+          target-branch: ${{ steps.pr.outputs.PULL_REQUEST_BRANCH }}
