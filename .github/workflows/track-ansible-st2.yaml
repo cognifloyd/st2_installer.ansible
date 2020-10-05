@@ -31,14 +31,15 @@ jobs:
 
       - name: Sync changes from StackStorm/ansible-st2
         id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v2.0
+        # uses: aormsby/Fork-Sync-With-Upstream-action@v2.0
+        uses: cognifloyd/Fork-Sync-With-Upstream-action@fix-sync-command
         with:
           upstream_repository: StackStorm/ansible-st2
           upstream_branch: master
           target_branch: ansible-st2-tracking
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          git_sync_command: pull --ff-only
-          # git_sync_command: merge --ff-only  # oops. action has a bug if it is not pull.
+          # git_sync_command: pull --ff-only
+          git_sync_command: merge --ff-only  # oops. action has a bug if it is not pull.
           # git_sync_command: ${{ github.event.inputs.git_sync_command }}
           # git_push_args: ${{ github.event.inputs.git_push_args }}
 
