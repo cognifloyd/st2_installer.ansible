@@ -2,13 +2,10 @@
 # https://github.com/marketplace/actions/ansible-lint
 # https://github.com/ansible/ansible-lint-action
 ---
-name: Ansible Lint
+name: Ansible Lint on Push/Merge
 
 on:
   push:
-    branches-ignore:
-      - 'ansible-st2-*'
-  pull_request:
     branches-ignore:
       - 'ansible-st2-*'
 
@@ -20,10 +17,6 @@ jobs:
     steps:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v2
-
-      - name: Make sure all yaml files use .yml extension
-        # yaml is better imo, but upstream only uses .yml, so use .yml to simplify syncing with upstream
-        run: "! find . -name '*.yaml' -not -path './.github/*'"
 
       - name: Lint Ansible Playbooks/Roles
         # use master (no recent tags: https://github.com/ansible/ansible-lint-action/issues/23 )

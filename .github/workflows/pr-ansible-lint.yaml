@@ -1,0 +1,34 @@
+---
+name: PR - Ansible Lint
+# only fail if changed lines have issues
+# ansible-lint will also run as part of molecule for more extensive testing
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'ansible-st2-*'
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Important: This sets up your GITHUB_WORKSPACE environment variable
+      - uses: actions/checkout@v2
+
+      - name: Lint Ansible Playbooks/Roles
+        uses: reviewdog/action-ansiblelint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Reporter of reviewdog command [github-pr-check,github-check,github-pr-review]. Default is github-pr-check.
+          # github-pr-review can use Markdown and add a link to rule page in reviewdog reports.
+          reporter: github-pr-review
+          # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
+          ansiblelint_flags: >-
+            playbooks/*.playbook.yml
+            roles/*/
+
+          # Filtering mode for the reviewdog command [added,diff_context,file,nofilter]. Default is added.
+          filter_mode: added
+          fail_on_error: true

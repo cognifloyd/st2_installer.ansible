@@ -1,0 +1,23 @@
+---
+name: Use .yml extension
+
+on:
+  push:
+    branches-ignore:
+      - 'ansible-st2-*'
+  pull_request:
+    branches-ignore:
+      - 'ansible-st2-*'
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make sure all yaml files use .yml extension
+        # yaml is better imo, but upstream only uses .yml, so use .yml to simplify syncing with upstream
+        run: "! find . -name '*.yaml' -not -path './.github/*'"
+
