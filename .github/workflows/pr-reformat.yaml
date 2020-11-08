@@ -1,0 +1,50 @@
+---
+name: PR - Reformat
+# only fail if changed lines have issues
+# ansible-lint will also run as part of molecule for more extensive testing
+
+on:
+  # pull_request_target uses the workflow from the target branch
+  # which allows using secrets.GITHUB_TOKEN even if the pull request is from a forked repo
+  pull_request_target:
+    branches-ignore:
+      - 'ansible-st2-*'
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install requirements with pip
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            black==20.8b1
+            isort==5.6.4
+
+      - name: Run reformatters
+        run: |
+          isort --version-number
+          black --version
+          isort
+          black .
+
+      - name: Suggest isort/black reformatted changes
+        uses: reviewdog/action-suggester@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tool_name: isort/black
+          # Filtering mode for the reviewdog command [added,diff_context,file,nofilter]. Default is added.
+          filter_mode: added
+          fail_on_error: true
