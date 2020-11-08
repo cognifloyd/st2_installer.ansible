@@ -22,9 +22,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Make sure all yaml files use .yml extension
-        run: "! find . -name '*.yaml'"
+        # yaml is better imo, but upstream only uses .yml, so use .yml to simplify syncing with upstream
+        run: "! find . -name '*.yaml' -not -path './.github/*'"
 
-      - name: Lint Ansible Playbook
+      - name: Lint Ansible Playbooks/Roles
         # use master (no recent tags: https://github.com/ansible/ansible-lint-action/issues/23 )
         uses: ansible/ansible-lint-action@master
         with:
