@@ -1,0 +1,37 @@
+# based on example from:
+# https://github.com/marketplace/actions/ansible-lint
+# https://github.com/ansible/ansible-lint-action
+---
+name: Ansible Lint  # feel free to pick your own name
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Important: This sets up your GITHUB_WORKSPACE environment variable
+      - uses: actions/checkout@v2
+
+      - name: Lint Ansible Playbook
+        # use master (no recent tags: https://github.com/ansible/ansible-lint-action/issues/23 )
+        uses: ansible/ansible-lint-action@master
+        with:
+          # [required]
+          # Paths to ansible files (i.e., playbooks, tasks, handlers etc..)
+          # or valid Ansible directories according to the Ansible role
+          # directory structure.
+          targets: |
+            playbooks/*.playbook.yml
+            roles/*/
+          # [optional]
+          # Arguments to override a package and its version to be set explicitly.
+          override-deps: |
+            ansible~=2.10.3
+            ansible-lint~=4.3.7
+          # [optional]
+          # Arguments to be passed to the ansible-lint
+          # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
+          args: ""
