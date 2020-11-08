@@ -4,7 +4,9 @@ name: PR - Ansible Lint
 # ansible-lint will also run as part of molecule for more extensive testing
 
 on:
-  pull_request:
+  # pull_request_target uses the workflow from the target branch
+  # which allows using secrets.GITHUB_TOKEN even if the pull request is from a forked repo
+  pull_request_target:
     branches-ignore:
       - 'ansible-st2-*'
 
