@@ -47,19 +47,19 @@ jobs:
       #    # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
       #    args: ""
 
-      - name: Install collections
+      - name: Install Collection Dependencies
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: ansible-galaxy
           args: collection install -r requirements.yml
 
-      - name: Build this collection
+      - name: Build st2_installer Collection
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: ansible-galaxy
           args: collection build
 
-      - name: Install this collection
+      - name: Install st2_installer Collection
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: sh
@@ -69,4 +69,4 @@ jobs:
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: sh
-          args: '-c "ansible-playbook -v --syntax-check playbooks/*.playbook.yml"'
+          args: '-c "ansible-playbook -vvv --syntax-check playbooks/*.playbook.yml"'
