@@ -9,7 +9,7 @@ rules:
   commas: {max-spaces-after: -1, level: error}
   comments: disable
   comments-indentation: disable
-  document-start: disable
+  document-start: enable
   empty-lines: {max: 3, level: error}
   hyphens: {level: error}
   indentation: disable
