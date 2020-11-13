@@ -1,0 +1,31 @@
+---
+name: YAML Lint on Push/Merge/PR
+
+on:
+  push:
+    branches-ignore:
+      - 'ansible-st2-*'
+  pull_request:
+    branches-ignore:
+      - 'ansible-st2-*'
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      #- name: Lint YAML files
+      #  # this action uses better github formatting than running yamllint alone.
+      #  uses: jacobtomlinson/gha-lint-yaml@master
+      #  with:
+      #    # need a list of yaml files then loop and pass in each one.
+      #    path:
+
+      - name: Lint YAML Files
+        uses: docker://sdesbure/yamllint:latest
+        with:
+          entrypoint: yamllint
+          args: '.'

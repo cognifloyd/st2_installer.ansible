@@ -2,10 +2,13 @@
 # https://github.com/marketplace/actions/ansible-lint
 # https://github.com/ansible/ansible-lint-action
 ---
-name: Ansible Lint on Push/Merge
+name: Ansible Lint on Push/Merge/PR
 
 on:
   push:
+    branches-ignore:
+      - 'ansible-st2-*'
+  pull_request:
     branches-ignore:
       - 'ansible-st2-*'
 
@@ -18,23 +21,37 @@ jobs:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v2
 
-      - name: Lint Ansible Playbooks/Roles
-        # use master (no recent tags: https://github.com/ansible/ansible-lint-action/issues/23 )
-        uses: ansible/ansible-lint-action@master
+      - name: Check Ansible Playbook Syntax
+        uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
-          # [required]
-          # Paths to ansible files (i.e., playbooks, tasks, handlers etc..)
-          # or valid Ansible directories according to the Ansible role
-          # directory structure.
-          targets: |
-            playbooks/*.playbook.yml
-            roles/*/
-          # [optional]
-          # Arguments to override a package and its version to be set explicitly.
-          override-deps: |
-            ansible~=2.10.3
-            ansible-lint~=4.3.7
-          # [optional]
-          # Arguments to be passed to the ansible-lint
-          # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
-          args: ""
+          entrypoint: ansible-playbook
+          args: '--syntax-check playbooks/*.playbook.yml'
+
+      - name: Lint Ansible Playbooks/Roles
+        uses: docker://yokogawa/ansible-lint:v4.3.7
+        with:
+          entrypoint: ansible-lint
+          # upstream does '-x 106,204,208'
+          args: '-v --force-color playbooks/*.playbook.yml roles/*/'
+
+      # I would prefer to use an ansible action, but it always rebuilds docker image.
+      # - name: Lint Ansible Playbooks/Roles
+      #  # use master (no recent tags: https://github.com/ansible/ansible-lint-action/issues/23 )
+      #  uses: ansible/ansible-lint-action@master
+      #  with:
+      #    # [required]
+      #    # Paths to ansible files (i.e., playbooks, tasks, handlers etc..)
+      #    # or valid Ansible directories according to the Ansible role
+      #    # directory structure.
+      #    targets: |
+      #      playbooks/*.playbook.yml
+      #      roles/*/
+      #    # [optional]
+      #    # Arguments to override a package and its version to be set explicitly.
+      #    override-deps: |
+      #      ansible~=2.10.3
+      #      ansible-lint~=4.3.7
+      #    # [optional]
+      #    # Arguments to be passed to the ansible-lint
+      #    # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
+      #    args: ""
