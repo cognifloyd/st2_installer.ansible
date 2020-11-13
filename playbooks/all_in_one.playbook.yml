@@ -17,7 +17,7 @@
           # rabbitmq config
           - '"messaging" in st2_config and "url" in st2_config.messaging and (st2_config.messaging.url | urlsplit("hostname") in ["127.0.0.1", "localhost"])'
         fail_msg: |
-          Cannot continue! st2_config must be configured with 
+          Cannot continue! st2_config must be configured with
           auth credentials for mongodb and rabbitmq.
           Generally this should be added (pre-generated) to the inventory.
         success_msg: "Proceeding. st2_config is configured correctly."
