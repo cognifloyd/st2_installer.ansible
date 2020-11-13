@@ -1,3 +1,4 @@
+---
 - name: auth | Install auth pre-reqs (Debian)
   become: yes
   apt:

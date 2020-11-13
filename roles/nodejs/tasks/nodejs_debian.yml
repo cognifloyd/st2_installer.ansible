@@ -1,3 +1,4 @@
+---
 - name: Ensure apt-transport-https is installed
   become: yes
   apt:

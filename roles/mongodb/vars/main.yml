@@ -1,2 +1,3 @@
+---
 # Extract mongodb "major.minor" version
 mongodb_major_minor_version: "{{ (mongodb_version|string)[:3] }}"
