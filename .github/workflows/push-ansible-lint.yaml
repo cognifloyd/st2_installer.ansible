@@ -47,6 +47,12 @@ jobs:
       #    # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
       #    args: ""
 
+      - name: Install collections
+        uses: docker://yokogawa/ansible-lint:v4.3.7
+        with:
+          entrypoint: sh
+          args: '-c "ansible-galaxy collection install -r requirements.yml"'
+
       - name: Check Ansible Playbook Syntax
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:

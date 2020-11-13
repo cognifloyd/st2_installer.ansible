@@ -1,0 +1,4 @@
+---
+collections:
+  - community.rabbitmq
+  - community.mongodb
