@@ -15,7 +15,7 @@
 # We ship `nginx.conf` via `st2` package doc files, for example
 - name: Enable shipping package documentation files for EL
   become: yes
-  ini_file:
+  ini_file: # noqa 208
     dest: /etc/yum.conf
     section: main
     option: tsflags

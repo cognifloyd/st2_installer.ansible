@@ -56,6 +56,7 @@
   copy:
     content: "{{ st2web_nginx_config }}"
     dest: /etc/nginx/sites-available/st2.conf
+    mode: 0644
   notify:
     - restart nginx
   tags: st2web
