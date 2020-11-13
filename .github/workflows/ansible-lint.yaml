@@ -25,7 +25,7 @@ jobs:
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: sh
-          args: "-c 'ansible-playbook --syntax-check playbooks/*.playbook.yml'"
+          args: "-c 'ansible-playbook -v --syntax-check playbooks/*.playbook.yml'"
 
       - name: Lint Ansible Playbooks/Roles
         uses: docker://yokogawa/ansible-lint:v4.3.7
