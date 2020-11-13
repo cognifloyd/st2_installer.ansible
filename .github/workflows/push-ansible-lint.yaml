@@ -69,4 +69,4 @@ jobs:
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
           entrypoint: sh
-          args: '-c "ansible-playbook -vvv --syntax-check playbooks/*.playbook.yml"'
+          args: '-c "ansible-playbook -vvv --syntax-check -e st2_hosts=localhost playbooks/*.playbook.yml"'
