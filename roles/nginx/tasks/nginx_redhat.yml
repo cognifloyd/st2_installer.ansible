@@ -8,7 +8,7 @@
         - "vars"
       files:
         - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
-        - "{{ ansible_facts.os_family | lower}}.yml"
+        - "{{ ansible_facts.os_family | lower }}.yml"
   tags: nginx
 
 - name: Add nginx key

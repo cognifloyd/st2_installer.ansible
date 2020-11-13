@@ -55,4 +55,3 @@ jobs:
         with:
           entrypoint: sh
           args: '-c "ansible-playbook -v --syntax-check playbooks/*.playbook.yml"'
-
