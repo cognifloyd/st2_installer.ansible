@@ -50,8 +50,20 @@ jobs:
       - name: Install collections
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
+          entrypoint: ansible-galaxy
+          args: collection install -r requirements.yml
+
+      - name: Build this collection
+        uses: docker://yokogawa/ansible-lint:v4.3.7
+        with:
+          entrypoint: ansible-galaxy
+          args: collection build
+
+      - name: Install this collection
+        uses: docker://yokogawa/ansible-lint:v4.3.7
+        with:
           entrypoint: sh
-          args: '-c "ansible-galaxy collection install -r requirements.yml"'
+          args: '-c "ansible-galaxy collection install *-st2_installer-*.tar.gz"'
 
       - name: Check Ansible Playbook Syntax
         uses: docker://yokogawa/ansible-lint:v4.3.7
