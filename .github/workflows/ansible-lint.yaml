@@ -21,12 +21,6 @@ jobs:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v2
 
-      - name: Check Ansible Playbook Syntax
-        uses: docker://yokogawa/ansible-lint:v4.3.7
-        with:
-          entrypoint: sh
-          args: '-c "ansible-playbook -v --syntax-check playbooks/*.playbook.yml"'
-
       - name: Lint Ansible Playbooks/Roles
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
@@ -55,3 +49,10 @@ jobs:
       #    # Arguments to be passed to the ansible-lint
       #    # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
       #    args: ""
+
+      - name: Check Ansible Playbook Syntax
+        uses: docker://yokogawa/ansible-lint:v4.3.7
+        with:
+          entrypoint: sh
+          args: '-c "ansible-playbook -v --syntax-check playbooks/*.playbook.yml"'
+
