@@ -24,15 +24,15 @@ jobs:
       - name: Check Ansible Playbook Syntax
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
-          entrypoint: ansible-playbook
-          args: '--syntax-check playbooks/\*.playbook.yml'
+          entrypoint: sh
+          args: "-c 'ansible-playbook --syntax-check playbooks/*.playbook.yml'"
 
       - name: Lint Ansible Playbooks/Roles
         uses: docker://yokogawa/ansible-lint:v4.3.7
         with:
-          entrypoint: ansible-lint
+          entrypoint: sh
           # upstream does '-x 106,204,208'
-          args: '-v --force-color playbooks/\*.playbook.yml roles/\*/'
+          args: "-c 'ansible-lint -v --force-color playbooks/*.playbook.yml roles/*/'"
 
       # I would prefer to use an ansible action, but it always rebuilds docker image.
       # - name: Lint Ansible Playbooks/Roles
