@@ -169,6 +169,7 @@
   become: yes
   ini_file:
     dest: /opt/stackstorm/chatops/st2chatops.env
+    mode: 0644
     section: null
     option: 'export {{ _conf_option.0 }}'
     value: '{{ _conf_option.1 }}'

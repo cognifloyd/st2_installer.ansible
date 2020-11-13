@@ -24,7 +24,7 @@
 
 - name: Configure encryption key in st2.conf
   become: yes
-  ini_file:
+  ini_file: # noqa 208
     path: /etc/st2/st2.conf
     section: keyvalue
     option: encryption_key_path

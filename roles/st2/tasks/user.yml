@@ -42,7 +42,7 @@
 
 - name: user | Configure system user in /etc/st2/st2.conf
   become: yes
-  ini_file:
+  ini_file: # noqa 208
     dest: /etc/st2/st2.conf
     section: system_user
     option: user
@@ -51,7 +51,7 @@
 
 - name: user | Configure system user ssh key in /etc/st2/st2.conf
   become: yes
-  ini_file:
+  ini_file: # noqa 208
     dest: /etc/st2/st2.conf
     section: system_user
     option: ssh_key_file

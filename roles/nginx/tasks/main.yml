@@ -8,6 +8,7 @@
   file:
     state: directory
     path: "{{ item }}"
+    mode: 0755
   loop:
     - /etc/nginx/sites-available/
     - /etc/nginx/sites-enabled/
