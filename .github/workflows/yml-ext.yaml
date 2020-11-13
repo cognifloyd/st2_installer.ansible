@@ -20,4 +20,3 @@ jobs:
       - name: Make sure all yaml files use .yml extension
         # yaml is better imo, but upstream only uses .yml, so use .yml to simplify syncing with upstream
         run: find . -name '*.yaml' -not -path './.github/*' -execdir /bin/false '{}' '+'
-
