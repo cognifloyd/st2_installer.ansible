@@ -1,5 +1,5 @@
 ---
-name: Use .yml extension
+name: PR/Push/Merge - Use .yml extension
 
 on:
   push:

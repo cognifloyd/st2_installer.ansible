@@ -2,13 +2,10 @@
 # https://github.com/marketplace/actions/ansible-lint
 # https://github.com/ansible/ansible-lint-action
 ---
-name: Ansible Lint on Push/Merge/PR
+name: Push/Merge - Ansible Lint
 
 on:
   push:
-    branches-ignore:
-      - 'ansible-st2-*'
-  pull_request:
     branches-ignore:
       - 'ansible-st2-*'
 

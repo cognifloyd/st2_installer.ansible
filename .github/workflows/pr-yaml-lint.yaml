@@ -1,11 +1,11 @@
 ---
-name: YAML Lint on Push/Merge/PR
+name: PR/Push/Merge - YAML Lint
 
 on:
   push:
     branches-ignore:
       - 'ansible-st2-*'
-  pull_request:
+  pull_request_target:
     branches-ignore:
       - 'ansible-st2-*'
 
