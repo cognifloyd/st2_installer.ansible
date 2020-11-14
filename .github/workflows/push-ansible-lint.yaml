@@ -17,6 +17,7 @@ jobs:
       image: yokogawa/ansible-lint:v4.3.7
 #      volumes:
 #        - ~/.ansible/collections:~/.ansible/collections
+      options: '-v "/home/runner/.ansible/collections":"/github/home/.ansible/collections"'
 
     steps:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
@@ -52,8 +53,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.ansible/collections/ansible_collections/
-            !~/.ansible/collections/ansible_collections/*/st2_installer/
+            /home/runner/.ansible/collections/ansible_collections/
+            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
           key: collections-${{ hashFiles('galaxy.yml') }}
 
       - name: Install Collection Dependencies
