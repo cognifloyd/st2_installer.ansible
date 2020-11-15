@@ -52,16 +52,16 @@ jobs:
         uses: ylemkimon/cache-restore@v2
         with:
           path: |
-            /home/runner/.ansible/collections/ansible_collections/
-            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
+            /home/runner/work/_temp/_github_home/.ansible/collections/ansible_collections/
+            !/home/runner/work/_temp/_github_home/.ansible/collections/ansible_collections/*/st2_installer/
           key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
           restore-keys: |
             deps-collections-${{ hashFiles('requirements.yml') }}-
             deps-collections-
 
-      - name: Copy Collections Cache for access in docker
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: cp -r /home/runner/.ansible/ /home/runner/work/_temp/_github_home/
+#      - name: Copy Collections Cache for access in docker
+#        if: steps.cache.outputs.cache-hit == 'true'
+#        run: cp -r /home/runner/.ansible/ /home/runner/work/_temp/_github_home/
 
       - name: Install Collection Dependencies on cache-miss
         if: steps.cache.outputs.cache-hit != 'true'
