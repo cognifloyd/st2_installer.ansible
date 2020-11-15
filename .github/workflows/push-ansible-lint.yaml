@@ -48,7 +48,7 @@ jobs:
       #    # https://ansible-lint.readthedocs.io/en/latest/usage.html#command-line-options
       #    args: ""
 
-      - name: Cache multiple paths
+      - name: Restore Collections Cache
         id: cache
         # uses: actions/cache@v2
         uses: ylemkimon/cache-restore@v2

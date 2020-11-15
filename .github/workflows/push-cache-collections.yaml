@@ -7,7 +7,7 @@ on:
       - 'ansible-st2-*'
 
 jobs:
-  refresh-cache:
+  zefresh-cache:
 
     runs-on: ubuntu-latest
 
@@ -30,7 +30,7 @@ jobs:
             !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
           key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
 
-      - name: Schedule the post success cache save
+      - name: Refresh Cache
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
