@@ -14,7 +14,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container: 
-      image: cytopia/ansible-lint:latest
+      image: blcksrx/ansible-lint:latest
 #      image: yokogawa/ansible-lint:v4.3.7
 #      volumes:
 #        - ~/.ansible/collections:~/.ansible/collections
