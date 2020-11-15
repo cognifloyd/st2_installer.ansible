@@ -14,7 +14,8 @@ jobs:
 
     runs-on: ubuntu-latest
     container: 
-      image: yokogawa/ansible-lint:v4.3.7
+      image: pipelinecomponents/ansible-lint:latest
+#      image: yokogawa/ansible-lint:v4.3.7
 #      volumes:
 #        - ~/.ansible/collections:~/.ansible/collections
       options: '-v "/home/runner/.ansible/collections":"/github/home/.ansible/collections"'
