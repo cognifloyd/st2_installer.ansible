@@ -7,7 +7,7 @@ on:
       - 'ansible-st2-*'
 
 jobs:
-  zefresh-cache:
+  refresh-cache:
 
     runs-on: ubuntu-latest
 

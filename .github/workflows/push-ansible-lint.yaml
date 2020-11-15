@@ -54,8 +54,8 @@ jobs:
         uses: ylemkimon/cache-restore@v2
         with:
           path: |
-            /github/home/.ansible/collections/ansible_collections/
-            !/github/home/.ansible/collections/ansible_collections/*/st2_installer/
+            /home/runner/.ansible/collections/ansible_collections/
+            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
           key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
           restore-keys: |
             deps-collections-${{ hashFiles('requirements.yml') }}-
