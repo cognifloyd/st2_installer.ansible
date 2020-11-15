@@ -13,19 +13,17 @@ jobs:
   lint:
 
     runs-on: ubuntu-latest
-    container: 
-      image: blcksrx/ansible-lint:latest
-#      image: yokogawa/ansible-lint:v4.3.7
-#      volumes:
-#        - ~/.ansible/collections:~/.ansible/collections
-      options: '-v "/home/runner/.ansible/collections":"/github/home/.ansible/collections"'
+    # container: with alpine/slim containers is not compatible with cache
 
     steps:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
       - uses: actions/checkout@v2
 
       - name: Lint Ansible Playbooks/Roles
-        run: 'sh -c "ansible-lint -v --force-color playbooks/*.playbook.yml roles/*/"'
+        uses: docker://yokogawa/ansible-lint:latest
+        with:
+          entrypoint: sh
+          args: '-c "ansible-lint -v --force-color playbooks/*.playbook.yml roles/*/"'
 
       # I would prefer to use an ansible action, but it always rebuilds docker image.
       # - name: Lint Ansible Playbooks/Roles
@@ -51,12 +49,11 @@ jobs:
 
       - name: Restore Collections Cache
         id: cache
-        # uses: actions/cache@v2
         uses: ylemkimon/cache-restore@v2
         with:
           path: |
-            /home/runner/.ansible/collections/ansible_collections/
-            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
+            /home/runner/_temp/_github_home/.ansible/collections/ansible_collections/
+            !/home/runner/_temp/_github_home/.ansible/collections/ansible_collections/*/st2_installer/
           key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
           restore-keys: |
             deps-collections-${{ hashFiles('requirements.yml') }}-
@@ -64,13 +61,25 @@ jobs:
 
       - name: Install Collection Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: ansible-galaxy collection install -r requirements.yml
+        uses: docker://yokogawa/ansible-lint:latest
+        with:
+          entrypoint: ansible-galaxy
+          args: collection install -r requirements.yml
 
       - name: Build st2_installer Collection
-        run: ansible-galaxy collection build
+        uses: docker://yokogawa/ansible-lint:latest
+        with:
+          entrypoint: ansible-galaxy
+          args: collection build
 
       - name: Install st2_installer Collection
-        run: 'sh -c "ansible-galaxy collection install *-st2_installer-*.tar.gz"'
+        uses: docker://yokogawa/ansible-lint:latest
+        with:
+          entrypoint: sh
+          args: '-c "ansible-galaxy collection install *-st2_installer-*.tar.gz"'
 
       - name: Check Ansible Playbook Syntax
-        run: 'sh -c "ansible-playbook -vvv --syntax-check -e st2_hosts=localhost playbooks/*.playbook.yml"'
+        uses: docker://yokogawa/ansible-lint:latest
+        with:
+          entrypoint: sh
+          args: '-c "ansible-playbook -vvv --syntax-check -e st2_hosts=localhost playbooks/*.playbook.yml"'
