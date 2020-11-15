@@ -1,0 +1,62 @@
+---
+name: Push/Merge - Cache Ansible Collections
+
+on:
+  push:
+    branches-ignore:
+      - 'ansible-st2-*'
+
+jobs:
+  refresh-cache:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python_version:
+          - "3.8"
+        ansible_version:
+          - stable-2.10
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check for good cache
+        id: cache
+        uses: ylemkimon/cache-restore@v2
+        with:
+          path: |
+            /home/runner/.ansible/collections/ansible_collections/
+            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
+          key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
+
+      - name: Schedule the post success cache save
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          path: |
+            /home/runner/.ansible/collections/ansible_collections/
+            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
+          key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
+
+      - name: Set up Python ${{ matrix.python_version }}
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python_version }}
+      
+      - name: Update pip
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          python --version
+          pip install --upgrade pip
+
+      - name: Install ansible-base (${{ matrix.ansible_version }})
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz
+
+      - name: Install Collection Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          ANSIBLE_COLLECTIONS_PATH: /home/runner/.ansible/collections
+        run: ansible-galaxy collection install -r requirements.yml

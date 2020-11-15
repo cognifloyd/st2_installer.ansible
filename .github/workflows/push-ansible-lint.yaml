@@ -50,12 +50,16 @@ jobs:
 
       - name: Cache multiple paths
         id: cache
-        uses: actions/cache@v2
+        # uses: actions/cache@v2
+        uses: ylemkimon/cache-restore@v2
         with:
           path: |
-            /home/runner/.ansible/collections/ansible_collections/
-            !/home/runner/.ansible/collections/ansible_collections/*/st2_installer/
-          key: collections-${{ hashFiles('galaxy.yml') }}
+            /github/home/.ansible/collections/ansible_collections/
+            !/github/home/.ansible/collections/ansible_collections/*/st2_installer/
+          key: deps-collections-${{ hashFiles('requirements.yml') }}-${{ hashFiles('galaxy.yml') }}
+          restore-keys: |
+            deps-collections-${{ hashFiles('requirements.yml') }}-
+            deps-collections-
 
       - name: Install Collection Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
