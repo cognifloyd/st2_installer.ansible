@@ -61,6 +61,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_BRANCH: ansible-st2-staging
           TARGET_BRANCH: ansible-st2-merge
+      # TODO on create PR failure,
+      #   revert ansible-st2-tracking to steps.sync.outputs.old_sha
+      #   revert ansible-st2-staging to ??? (direct-merge-action needs old/new sha output vars)
 
       - name: Merge ansible-st2-merge into PR branch
         if: ${{ steps.sync.outputs.has_new_commits == 'true' }}
