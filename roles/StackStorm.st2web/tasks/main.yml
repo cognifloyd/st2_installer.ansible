@@ -1,16 +1,4 @@
 ---
-- name: Check if enterprise is installed
-  become: yes
-  stat:
-    path: /opt/stackstorm/static/webui/flow/
-  register: ewc_installed
-
-# For enterprise 'bwc-ui' replaces 'st2web' package
-- name: "Decide which package to use: 'st2web' vs 'bwc-ui'"
-  set_fact:
-    st2web_package_name: bwc-ui
-  when: ewc_installed.stat.exists
-
 - name: Install latest {{ st2web_package_name }} package, auto-update
   become: yes
   package:
