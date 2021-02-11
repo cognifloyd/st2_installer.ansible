@@ -1,12 +1,40 @@
-# Ansible-st2
-Ansible playbooks to deploy [StackStorm](https://github.com/stackstorm/st2).
+# Ansible Collection - cognifloyd.st2_installer (st2_installer.ansible)
+
+Ansible Collection for installing StackStorm (ST2)
+
+_This is not an official part of the StackStorm project._
+
 > [StackStorm](http://stackstorm.com/) is event-driven automation platform written in Python.
-With over [50+ integrations](https://github.com/StackStorm/st2contrib/tree/master/packs) like GitHub, Docker, Nagios, NewRelic, AWS, Ansible it allows you to wire together your existing infrastructure into complex Workflows with auto-remediation and many more.
+With over [50+ integrations](https://exchange.stackstorm.org) like GitHub, Docker, Nagios, NewRelic, AWS, Ansible it allows you to wire together your existing infrastructure into complex Workflows with auto-remediation and many more.
 Aka IFTTT orchestration for Ops.
 
-[![Build Status](https://travis-ci.org/StackStorm/ansible-st2.svg?branch=master)](https://travis-ci.org/StackStorm/ansible-st2)
+[![Build Status](https://travis-ci.org/cognifloyd/st2_installer.ansible.svg?branch=master)](https://travis-ci.org/cognifloyd/st2_installer.ansible)
 [![Repository deb/rpm](https://img.shields.io/badge/Repository-deb/rpm-blue.svg)](https://packagecloud.io/StackStorm/stable/)
 [![Join our community Slack](https://stackstorm-community.herokuapp.com/badge.svg)](https://stackstorm.com/community-signup)
+
+## Goals for this collection
+
+These goals are mix of things to acomplish and guidelines on the scope of this project.
+
+- Reach feature parity with other st2 installers.
+- Speed up development (as compared with StackStorm/ansible-st2).
+- Participate in the wider ansible community; Use and contribute to 3rd party collections and roles wherever possible.
+- Make the installer a proper Ansible collection.
+- Support upgrading st2 installations.
+- Make it easier to scale-up StackStorm installations. As the installation scales up, the roles should facilitate moving components into HA setups.
+- Use molecule to test the roles (molecule is a standard testing tool in the ansible community).
+- Use [pulp_installer](https://github.com/pulp/pulp_installer/) is a good example of how to structure a collection like this.
+
+## Relationship with StackStorm/ansible-st2
+
+This collection replaces [StackStorm/ansible-st2](https://github.com/StackStorm/ansible-st2).
+ansible-st2 is missing many of the features of the other st2 installation methods, especially
+security features like securing mongodb and rabbitmq installations. It is difficult to add
+features when so many parts of StackStorm's internal infrastructure dogfood (use) ansible-st2.
+So, the safest way to add these features, as well as turning the installer into a proper
+ansible collection for ansible 2.9+, was to fork ansible-st2.
+
+<!-- TODO: Deal with any inaccuracies in the readme sections below from ansible-st2 -->
 
 ## Supported platforms
 * Ubuntu Xenial (16.04)
@@ -14,7 +42,7 @@ Aka IFTTT orchestration for Ops.
 * RHEL7 / CentOS7
 * RHEL8 / CentOS8
 
-> If you're using the provided Vagrantfile, note that it uses Bionic by default.
+<!-- > If you're using the provided Vagrantfile, note that it uses Bionic by default. -->
 
 > In order to access StackStorm Web UI, please don't forget to ensure that http/https ports are opened in your firewall system.
 
@@ -23,8 +51,7 @@ At least 2GB of memory and 3.5GB of disk space is required, since StackStorm is 
 
 ## Installation
 ```sh
-# stackstorm
-ansible-playbook stackstorm.yml
+ansible-galaxy collection install cognifloyd.st2_installer
 ```
 
 ## Variables
@@ -52,13 +79,6 @@ Below is the list of variables you can redefine in your playbook to customize st
 | `st2web_ssl_certificate`     | `null` | String with custom SSL certificate (`.crt`). If not provided, self-signed certificate will be generated.
 | `st2web_ssl_certificate_key` | `null` | String with custom SSL certificate secret key (`.key`). If not provided, self-signed certificate will be generated.
 | `st2web_nginx_config`     | `null` | String with a custom nginx configuration file (`st2.conf`). If not provided, the default st2.conf will be used.
-| **ewc**
-| `ewc_license`            | `null`        | EWC license key is required for installing EWC enteprise bits via this ansible role.
-| `ewc_repo`               | `enterprise`  | EWC PackageCloud repository to install. [`enterprise`](https://packagecloud.io/StackStorm/enterprise/), [`enterprise-unstable`](https://packagecloud.io/StackStorm/enterprise-unstable/), [`staging-enterprise`](https://packagecloud.io/StackStorm/staging-enteprise/), [`staging-enterprise-unstable`](https://packagecloud.io/StackStorm/staging-enterprise-unstable/)
-| `ewc_version`            | `latest`      | EWC enterprise version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0`. The version used here should match `st2_version`.
-| `ewc_revision`           | `1`           | EWC enterprise revision to install. Used only with pinned `ewc_version`.
-| `ewc_rbac` | [See `ewc_rbac` variable in role defaults](roles/StackStorm.ewc/defaults/main.yml) | EWC RBAC roles and assignments. This is a dictionary with two keys `roles` and `assignments`. `roles` and `assignments` are in turn both arrays. Each element in the array follows the exact YAML schema for [roles](https://ewc-docs.extremenetworks.com/rbac.html#user-permissions) and [assignments](https://ewc-docs.extremenetworks.com/rbac.html#defining-user-role-assignments) defined in EWC documentation.
-| `ewc_ldap` | [See `ewc_ldap` variable in role defaults](roles/StackStorm.ewc/defaults/main.yml) | Settings for EWC LDAP authentication backend. `ewc_ldap` is a dictionary and has one item `backend_kwargs`. `backend_kwargs` should be provided as exactly listed in EWC documentation for [LDAP configuration](https://ewc-docs.extremenetworks.com/authentication.html#auth-backends).
 | **st2chatops**
 | `st2chatops_version`     | `latest`      | st2chatops version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0`.
 | `st2chatops_st2_api_key` |               | st2 API key to be updated in st2chatops.env using "st2 apikey create -k" in a task
@@ -66,7 +86,7 @@ Below is the list of variables you can redefine in your playbook to customize st
 | `st2chatops_config`      | `{ }`         | Based on adapter in `st2chatops_hubot_adapter`, provide hash for the adapter settings, to update [`st2chatops.env`](https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env). For example, for `Slack` hubot adapter: `st2chatops_config:` `HUBOT_SLACK_TOKEN: xoxb-CHANGE-ME-PLEASE`
 | `st2chatops_version`     | `latest`      | st2chatops version to install. Use `latest` to get automatic updates or pin it to numeric version like `2.2.0`.
 
-## Examples
+<!-- ## Examples
 Install latest `stable` StackStorm with all its components on local machine:
 ```sh
 ansible-playbook stackstorm.yml -i 'localhost,' --connection=local
@@ -79,6 +99,7 @@ Install specific numeric version of st2 with pinned revision number as well:
 ```sh
 ansible-playbook stackstorm.yml --extra-vars='st2_version=2.2.0 st2_revision=8'
 ```
+-->
 
 ## Installing behind a proxy.
 
@@ -93,7 +114,7 @@ st2smoketests, you will need to disable proxy for localhost.
 ```
 
 ## Developing
-There are a few requirements when developing on `ansible-st2`.
+There are a few requirements when developing on `st2_installer.ansible`.
 
 These are the platforms we must support (must pass end-to-end testing):
 - Ubuntu Xenial
@@ -105,7 +126,7 @@ These are the platforms we must support (must pass end-to-end testing):
 
 Must also support Ansible Idempotence (Eg. Ansible-playbook re-run should end with the following results: `changed=0.*failed=0`)
 
-For development purposes there is [Vagrantfile](Vagrantfile) available. The following command will setup ubuntu18 box (`ubuntu/bionic64`) by default:
+<!-- For development purposes there is [Vagrantfile](Vagrantfile) available. The following command will setup ubuntu18 box (`ubuntu/bionic64`) by default:
 ```sh
 vagrant up
 ```
@@ -116,11 +137,13 @@ vagrant up ubuntu16
 vagrant up centos7
 vagrant up centos8
 ```
+-->
 
 ## Other Installers
 You might be interested in other methods to deploy StackStorm engine:
 * Configuration Management
   * [Puppet Module](https://github.com/stackstorm/puppet-st2)
+  * [Official Ansible Roles](https://github.com/stackstorm/ansible-st2)
 
 * Manual Instructions
   * [Ubuntu 16.04](https://docs.stackstorm.com/install/u16.html)
@@ -130,7 +153,7 @@ You might be interested in other methods to deploy StackStorm engine:
 
 ## Help
 If you're in stuck, our community always ready to help, feel free to:
-* Ask questions in our [public Slack channel](https://stackstorm.com/community-signup)
-* [Report bug](https://github.com/StackStorm/ansible-st2/issues), provide [feature request](https://github.com/StackStorm/ansible-st2/pulls) or just give us a ✮ star
+<!-- * Ask questions in our [public Slack channel](https://stackstorm.com/community-signup) -->
+* [Report bug](https://github.com/cognifloyd/st2_installer.ansible/issues), provide [feature request](https://github.com/cognifloyd/st2_installer.ansible/pulls) or just give us a ✮ star
 
 Your contribution is more than welcome!

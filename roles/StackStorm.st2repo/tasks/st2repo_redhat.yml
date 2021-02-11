@@ -34,7 +34,7 @@
     repo_gpgcheck: yes
     gpgkey: "https://packagecloud.io/StackStorm/{{ st2repo_name }}/gpgkey"
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
-    metadata_expire: 300
+    metadata_expire: '300'
     gpgcheck: no
     enabled: yes
     sslverify: yes
