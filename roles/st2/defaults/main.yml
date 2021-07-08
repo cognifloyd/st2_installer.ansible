@@ -1,8 +1,7 @@
 ---
 # StackStorm version to install. `present` to install available package, `latest` to get automatic updates or pin it to numeric version like `2.2.0`.
+# On Debian need to specify revision of package like `2.2.0-1`.
 st2_version: latest
-# StackStorm revision to install. Used only with pinned `st2_version`.
-st2_revision: 1
 
 # Hash with StackStorm configuration settings to set in 'st2.conf' ini file
 # See https://github.com/StackStorm/st2/blob/master/conf/st2.conf.sample for a full list
@@ -18,6 +17,12 @@ st2_config: {}
 #    password: random-password123
 #  messaging:
 #    url: amqp://st2:st2@127.0.0.1:5672//
+# In StackStorm > 3.4 then redis client libraries are included in the ST2
+# package. And therefore redis can be automatically used by setting st2_config
+# as follows
+#st2_config:
+#  coordination:
+#    url: redis://127.0.0.1:6379
 
 # System user from which st2 will execute local/remote shell actions
 st2_system_user: stanley
@@ -32,6 +37,36 @@ st2_auth_enable: yes
 st2_auth_username: testu
 # Password used by StackStorm standalone authentication
 st2_auth_password: testp
+
+
+# By specifying a valid configuration for LDAP,
+# (See https://docs.stackstorm.com/latest/authentication.html#ldap )
+# LDAP auth backend is setup for st2.
+# Note that you just need to provide the backend_kwargs.
+st2_ldap_enable: no
+# "enable" is not a key of st2_ldap because the defaults would be lost if any key in the dictionary is changed
+st2_ldap:
+  backend_kwargs: {}
+
+# Specify roles and assignments for RBAC.
+# Roles are pushed as YML files to /opt/stackstorm/rbac/roles
+# Assignments are pushed as YML files to /opt/stackstorm/rbac/assignments/
+# The schema for roles and assignments follow the exact schema definition
+# define in https://docs.stackstorm.com/latest/rbac.html#defining-roles-and-permission-grants
+# and https://docs.stackstorm.com/latest/rbac.html#defining-user-role-assignments
+st2_rbac_enable: no
+# "enable" is not a key of st2_rbac because the defaults would be lost if any key in the dictionary is changed
+st2_rbac:
+  roles: []
+  assignments:
+    - name: "{{ st2_system_user }}"
+      roles:
+        - admin
+    - name: "{{ st2_auth_username }}"
+      roles:
+        - system_admin
+
+
 # Save credentials in ~/.st2/config file
 st2_save_credentials: yes
 # ST2 packs to be installed (list)
@@ -40,10 +75,3 @@ st2_packs:
 
 # Additional python packages to install
 st2_python_packages: []
-
-# Whether permission is granted to install the deadsnakes Python3.6 PPA for Ubuntu 16. 
-#The python3.6 package is a required dependency for the StackStorm st2 package but that is not installable from any of the default Ubuntu 16.04 repositories.
-#We recommend switching to Ubuntu 18.04 LTS (Bionic) as a base OS. Support for Ubuntu 16.04 will be removed with future StackStorm versions.
-#Alternatively the playbooks will  try to add python3.6 from the 3rd party 'deadsnakes' repository: https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa.
-#Only set to true, if you are aware of the support and security risks associated with using unofficial 3rd party PPA repository, and you understand that StackStorm does NOT provide ANY support for python3.6 packages on Ubuntu 16.04.
-st2_u16_add_insecure_py3_ppa: false

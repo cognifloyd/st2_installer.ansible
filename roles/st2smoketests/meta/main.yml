@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  description: Install StackStorm and all its components
+  description: Run StackStorm smoketests to verify the setup
   author: armab
   company: StackStorm
   license: Apache 2.0
@@ -22,4 +22,6 @@ galaxy_info:
     - remediation
     - devops
 dependencies:
-  - role: st2repo
+  - role: StackStorm.epel
+    when: ansible_facts.os_family == 'RedHat'
+  - role: StackStorm.st2repo

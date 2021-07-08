@@ -1,24 +1,23 @@
 ---
+- name: Include OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
+    - "{{ ansible_facts.os_family | lower }}.yml"
+  ignore_errors: true
+
 - name: auth | Install auth pre-reqs (Debian)
   become: yes
   apt:
     name:
-      - python-passlib
       - apache2-utils
+      - "{{ passlib }}"
     state: present
   register: _task
   retries: 5
   delay: 3
   until: _task is succeeded
   when: ansible_facts.os_family == 'Debian'
-
-- name: Include RedHat OS-specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
-    - "{{ ansible_facts.os_family | lower }}.yml"
-  ignore_errors: true
-  when: ansible_facts.os_family == 'RedHat'
 
 - name: auth | Install auth pre-reqs (RedHat)
   become: yes
@@ -78,3 +77,12 @@
       username = {{ st2_auth_username }}
       password = {{ st2_auth_password }}
   when: st2_save_credentials | bool
+
+- name: auth | Setup LDAP
+  include_tasks: auth-ldap.yml
+  when: st2_ldap_enable
+  tags: st2, auth, ldap
+
+- name: auth | Setup RBAC
+  include_tasks: auth-rbac.yml
+  tags: st2, auth, rbac

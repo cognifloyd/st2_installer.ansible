@@ -3,6 +3,8 @@ rabbitmq_plugins: []
 # To enable the management plugin (in which case you'd want at least one user tagged with administrator):
 #rabbitmq_plugins:
 #  - rabbitmq_management
+# Set to "present" to install latest version, or specify specific version
+rabbitmq_version: "present"
 
 # If changing the default, make sure to include an entry for every vhost listed in rabbitmq_users.*.permissions
 rabbitmq_vhosts: "{{ lookup('flattened', rabbitmq_users|map(attribute='permissions')|list ) | map(attribute='vhost')|list|unique }}"
