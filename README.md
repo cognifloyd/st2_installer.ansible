@@ -37,8 +37,8 @@ ansible collection for ansible 2.9+, was to fork ansible-st2.
 <!-- TODO: Deal with any inaccuracies in the readme sections below from ansible-st2 -->
 
 ## Supported platforms
-* Ubuntu Xenial (16.04)
 * Ubuntu Bionic (18.04)
+* Ubuntu Focal (20.04)
 * RHEL7 / CentOS7
 * RHEL8 / CentOS8
 
@@ -47,7 +47,7 @@ ansible collection for ansible 2.9+, was to fork ansible-st2.
 > In order to access StackStorm Web UI, please don't forget to ensure that http/https ports are opened in your firewall system.
 
 ## Requirements
-At least 2GB of memory and 3.5GB of disk space is required, since StackStorm is shipped with RabbitMQ, Mongo and nginx.
+At least 2GB of memory and 3.5GB of disk space is required, since StackStorm is shipped with RabbitMQ, Mongo, Redis  and nginx.
 
 ## Installation
 ```sh
@@ -62,8 +62,7 @@ Below is the list of variables you can redefine in your playbook to customize st
 | **st2repo**
 | `st2repo_name`           | `stable`      | StackStorm PackageCloud repository to install. [`stable`](https://packagecloud.io/StackStorm/stable/), [`unstable`](https://packagecloud.io/StackStorm/unstable/), [`staging-stable`](https://packagecloud.io/StackStorm/staging-stable/), [`staging-unstable`](https://packagecloud.io/StackStorm/staging-unstable/)
 | **st2**
-| `st2_version`            | `latest`      | StackStorm version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0`.
-| `st2_revision`           | `1`           | StackStorm revision to install. Used only with pinned `st2_version`.
+| `st2_version`            | `latest`      | StackStorm version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0` or with revision like `2.2.0-1`
 | `st2_config`             | `{}`          | Hash with StackStorm configuration settings to set in [`st2.conf`](https://github.com/StackStorm/st2/blob/master/conf/st2.conf.sample) ini file.
 | `st2_system_user`        | `stanley`     | System user from which st2 will execute local/remote shell actions.
 | `st2_system_user_in_sudoers` | `yes`| Add `st2_system_user` to the sudoers (recommended for most `st2` features to work).
@@ -72,16 +71,19 @@ Below is the list of variables you can redefine in your playbook to customize st
 | `st2_auth_username`      | `testu`       | Username used by StackStorm standalone authentication.
 | `st2_auth_password`      | `testp`       | Password used by StackStorm standalone authentication.
 | `st2_save_credentials`   | `yes`         | Save credentials for local CLI in `/root/.st2/config` file.
+| `st2_rbac_enable`        | `no`          | Enable RBAC. |
+| `st2_rbac`               | [See `st2_rbac` variable in role defaults](roles/st2/defaults/main.yml) | RBAC roles and assignments. This is a dictionary with two keys `roles` and `assignments`. `roles` and `assignments` are in turn both arrays. Each element in the array follows the exact YAML schema for [roles](https://docs.stackstorm.com/rbac.html#user-permissions) and [assignments](https://docs.stackstorm.com/rbac.html#defining-user-role-assignments) defined in ST2 documentation.
+| `st2_ldap_enable`        | `no`          | Enable LDAP authentication backend. |
+| `st2_ldap`               | [See `st2_ldap` variable in role defaults](roles/st2/defaults/main.yml) | Settings for LDAP authentication backend. `st2_ldap` is a dictionary and has one item `backend_kwargs`. `backend_kwargs` should be provided as exactly listed in ST2 documentation for [LDAP configuration](https://docs.stackstorm.com/authentication.html#ldap).
 | `st2_packs`              | `[ st2 ]`     | List of packs to install. This flag does not work with a `--python3` only pack.
 | `st2_python_packages`    | `[ ]`         | List of python packages to install into the `/opt/stackstorm/st2` virtualenv. This is needed when deploying alternative auth or coordination backends which depend on Python modules to make them work.
-| `st2_u16_add_insecure_py3_ppa`	| `false`     | Whether permission is granted to install the deadsnakes Python3.6 PPA for Ubuntu 16. 
-
 | **st2web**
+| `st2web_version`     | `latest`      | st2web version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0` or with revision like `2.2.0-1`.
 | `st2web_ssl_certificate`     | `null` | String with custom SSL certificate (`.crt`). If not provided, self-signed certificate will be generated.
 | `st2web_ssl_certificate_key` | `null` | String with custom SSL certificate secret key (`.key`). If not provided, self-signed certificate will be generated.
 | `st2web_nginx_config`     | `null` | String with a custom nginx configuration file (`st2.conf`). If not provided, the default st2.conf will be used.
 | **st2chatops**
-| `st2chatops_version`     | `latest`      | st2chatops version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0`.
+| `st2chatops_version`     | `latest`      | st2chatops version to install. `present` to install available package, `latest` to get automatic updates, or pin it to numeric version like `2.2.0` or with revision like `2.2.0-1`.
 | `st2chatops_st2_api_key` |               | st2 API key to be updated in st2chatops.env using "st2 apikey create -k" in a task
 | `st2chatops_hubot_adapter` |             | Hubot Adapter to be used for st2chatops. Default is `shell`, but should be changed to one of the [`supported adapters`](`https://github.com/StackStorm/ansible-st2/blob/master/roles/st2chatops/vars/main.yml`).[**Required**]
 | `st2chatops_config`      | `{ }`         | Based on adapter in `st2chatops_hubot_adapter`, provide hash for the adapter settings, to update [`st2chatops.env`](https://github.com/StackStorm/st2chatops/blob/master/st2chatops.env). For example, for `Slack` hubot adapter: `st2chatops_config:` `HUBOT_SLACK_TOKEN: xoxb-CHANGE-ME-PLEASE`
@@ -118,8 +120,8 @@ st2smoketests, you will need to disable proxy for localhost.
 There are a few requirements when developing on `st2_installer.ansible`.
 
 These are the platforms we must support (must pass end-to-end testing):
-- Ubuntu Xenial
 - Ubuntu Bionic
+- Ubuntu Focal
 - CentOS7
 - CentOS8
 - RHEL7 (via AWS)
@@ -134,7 +136,7 @@ vagrant up
 
 Other distros:
 ```sh
-vagrant up ubuntu16
+vagrant up ubuntu20
 vagrant up centos7
 vagrant up centos8
 ```
@@ -147,8 +149,8 @@ You might be interested in other methods to deploy StackStorm engine:
   * [Official Ansible Roles](https://github.com/stackstorm/ansible-st2)
 
 * Manual Instructions
-  * [Ubuntu 16.04](https://docs.stackstorm.com/install/u16.html)
   * [Ubuntu 18.04](https://docs.stackstorm.com/install/u18.html)
+  * [Ubuntu 20.04](https://docs.stackstorm.com/install/u20.html)
   * [RHEL8/CentOS8](https://docs.stackstorm.com/install/rhel8.html)
   * [RHEL7/CentOS7](https://docs.stackstorm.com/install/rhel7.html)
 

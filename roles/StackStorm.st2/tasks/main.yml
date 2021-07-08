@@ -1,9 +1,4 @@
 ---
-- name: Ensure python3.6 is available
-  include_tasks: request_ppa.yml
-  when: ansible_facts.os_family == 'Debian' and ansible_facts.distribution_major_version == '16'
-  tags: st2
-
 - name: Verify python3-devel is available in enabled repo
   become: yes
   shell:
@@ -75,7 +70,7 @@
 - name: Install pinned st2 package
   become: yes
   package:
-    name: st2{{ '-' if ansible_facts.pkg_mgr == 'yum' else '=' }}{{ st2_version }}-{{ st2_revision }}
+    name: st2{{ '=' if ansible_facts.pkg_mgr == 'apt' else '-' }}{{ st2_version }}
     state: present
   register: _task
   retries: 5
