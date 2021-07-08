@@ -1,7 +1,7 @@
 ---
 galaxy_info:
-  description: Test EWC enteprise components were installed correctly.
-  author: lakshmi-kannan
+  description: Run StackStorm smoketests to verify the setup
+  author: armab
   company: StackStorm
   license: Apache 2.0
   min_ansible_version: 2.5
@@ -9,19 +9,19 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - bionic
-        - xenial
+        - focal
     - name: EL
       versions:
         - 7
         - 8
   galaxy_tags:
+    - system
     - stackstorm
-    - bwc
-    - ewc
-    - repositories
-    - packagecloud
+    - st2
+    - automation
+    - remediation
+    - devops
 dependencies:
+  - role: StackStorm.epel
+    when: ansible_facts.os_family == 'RedHat'
   - role: StackStorm.st2repo
-  - role: StackStorm.st2
-  - role: StackStorm.st2web
-  - role: StackStorm.ewc
