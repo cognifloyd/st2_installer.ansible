@@ -42,6 +42,33 @@
   roles:
     - name: Mongo | Main DB for StackStorm
       role: mongodb
+  tasks:
+    - name: Initialise MongoDB Replicaset
+      community.mongodb.mongodb_replicaset:
+        login_database: "admin"
+        login_host: localhost
+        members: "{{ ansible_play_hosts_all | product([':' + mongodb_port]) | map('join') | list  }}"
+          #- mongodb1:27017
+          #- mongodb2:27017
+          #- mongodb3:27017
+      register: create_rs
+      when: inventory_hostname == "mongodb-1"  # when is primary
+
+    - name: Wait for rs config to settle
+      pause:
+        seconds: 10
+      when: create_rs.changed
+
+    - name: Wait for replicaset to converge
+      community.mongodb.mongodb_status:
+        replica_set: rs0
+        poll: 10
+        interval: 10
+      register: rs
+
+    - debug:
+        var: rs
+
 
 - name: ST2 Infrastructure | Install RabbitMQ for StackStorm Message Broker
   hosts: "{{ rmq_hosts | default('all') }}"
