@@ -1,0 +1,83 @@
+---
+# By default, install infrastructure services on all hosts.
+# The default assumes that all will be installed on the same host with only one host in inventory.
+# Alternatively, set these vars via extra_vars to define which hosts (or groups) to use:
+#   - db_hosts
+#   - rmq_hosts
+#   - coord_hosts
+
+- name: ST2 Infrastructure | Install MongoDB for StackStorm Database
+  hosts: "{{ db_hosts | default('all') }}"
+  environment: "{{ st2_proxy_env | default({}) }}"
+  collections:
+    - cognifloyd.st2_installer
+    - community.mongodb
+  vars:
+    # TODO: What to do about st2_config var?
+    mongodb_bind_ip: '{{ st2_config.database.host | default("127.0.0.1") }}'
+    mongodb_port: '{{ st2_config.database.port | default("27017") }}'
+    mongodb_authorization: "enabled"
+    # Should set mongodb_admin_pwd in inventory
+    mongodb_default_admin_pwd: "{{ st2_config.database.password }}"
+
+  pre_tasks:
+    - name: Set replicaset var if not set
+      when: mongodb_replicaset is not defined
+      set_fact:
+        mongodb_replicaset: "{{ ansible_play_hosts_all | length > 1 }}"
+
+    - name: Set sharding var if not set
+      when: mongodb_sharding is not defined
+      set_fact:
+        mongodb_sharding: false
+
+    - name: Configure mongodb_users if needed
+      when: mongodb_users is not defined
+      set_fact:
+        mongodb_users:
+          - db: "{{ st2_config.database.db_name | default('st2') }}"
+            user: "{{ st2_config.database.username }}"
+            pwd: "{{ st2_config.database.password }}"
+            roles: readWrite,dbAdmin
+  roles:
+    - name: Mongo | Main DB for StackStorm
+      role: mongodb
+
+- name: ST2 Infrastructure | Install RabbitMQ for StackStorm Message Broker
+  hosts: "{{ rmq_hosts | default('all') }}"
+  environment: "{{ st2_proxy_env | default({}) }}"
+  collections:
+    - cognifloyd.st2_installer
+    - community.rabbitmq
+  # vars:
+    # TODO: What to do about st2_config var?
+
+  # TODO: Build a cluster if rmq_hosts has >1 host
+  pre_tasks:
+    - name: Configure rabbitmq_users if needed
+      when: rabbitmq_users is not defined
+      set_fact:
+        rabbitmq_users:
+          - user: '{{ st2_config.messaging.url | urlsplit("username") }}'
+            password: '{{ st2_config.messaging.url | urlsplit("password") }}'
+            permissions:
+              - vhost: '{{ (st2_config.messaging.url | urlsplit("path"))[1:] | default("/", true) }}'
+                configure_priv: .*
+                read_priv: .*
+                write_priv: .*
+
+  roles:
+    - name: RabbitMQ | Message Broker for StackStorm
+      role: rabbitmq
+
+- name: ST2 Infrastructure | Install Redis for StackStorm Coordination Backend
+  hosts: "{{ coord_hosts | default('all') }}"
+  environment: "{{ st2_proxy_env | default({}) }}"
+  collections:
+    - cognifloyd.st2_installer
+    #- community.redis
+
+  # TODO: Build a cluster if coord_hosts has >1 host
+  roles:
+    - name: Redis | Message Broker for StackStorm
+      role: rabbitmq
