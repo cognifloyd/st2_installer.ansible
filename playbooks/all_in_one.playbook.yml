@@ -59,6 +59,9 @@
     - name: RabbitMQ | Message Broker for StackStorm
       role: rabbitmq
 
+    - name: Redis | Coordination Backend for StackStorm
+      role: redis
+
     - name: EPEL | Add EPEL repo to RHEL/CentOS
       role: epel
       when: ansible_facts.os_family == 'RedHat'
