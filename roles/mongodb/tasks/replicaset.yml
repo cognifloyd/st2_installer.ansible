@@ -1,0 +1,40 @@
+---
+# based in part on https://github.com/rhysmeister/AutomatingMongoDBWithAnsible/blob/master/playbooks/replicaset/mongodb.yml
+
+# TODO: does the mongodb role need to configure replicaset before auth? And auth user only on primary?
+
+- name: Initialize MongoDB Replicaset
+  community.mongodb.mongodb_replicaset:
+    replica_set: "{{ mongodb_replicaset_name }}"
+    members: "{{ ansible_play_hosts_all | product([':', mongodb_port|string]) | map('join') | list  }}"
+    login_host: localhost
+    login_user: "{{ mongodb_admin_user }}"
+    login_password: "{{ mongodb_admin_pwd }}"
+    login_port: "{{ mongodb_port | string }}"  # silence implicit int->str conversion warning
+    login_database: admin
+  register: init_replicaset
+  when:
+    - mongodb_replicaset|bool
+    - inventory_hostname == ansible_play_hosts_all[0]
+
+- name: Wait for Replicaset config to settle
+  pause:
+    seconds: 10
+  when:
+    - mongodb_replicaset|bool
+    - init_replicaset.changed
+
+- name: Wait for Replicaset to converge
+  community.mongodb.mongodb_status:
+    replica_set: "{{ mongodb_replicaset_name }}"
+    poll: 10
+    interval: 10
+  register: replicaset
+  when:
+    - mongodb_replicaset|bool
+
+- name: Print replicaset details
+  debug:
+    var: replicaset
+  when:
+    - mongodb_replicaset|bool
