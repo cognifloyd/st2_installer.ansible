@@ -19,6 +19,7 @@
     mongodb_authorization: "enabled"
     # Should set mongodb_admin_pwd in inventory
     mongodb_default_admin_pwd: "{{ st2_config.database.password }}"
+    mongodb_replicaset_name: st2
 
   pre_tasks:
     - name: Set replicaset var if not set
@@ -43,32 +44,43 @@
     - name: Mongo | Main DB for StackStorm
       role: mongodb
   tasks:
-    - name: Initialise MongoDB Replicaset
+    # based in part on https://github.com/rhysmeister/AutomatingMongoDBWithAnsible/blob/master/playbooks/replicaset/mongodb.yml
+    # TODO: does the mongodb role need to configure replicaset before auth? And auth user only on primary?
+    - name: Initialize MongoDB Replicaset
       community.mongodb.mongodb_replicaset:
-        login_database: "admin"
+        replica_set: "{{ mongodb_replicaset_name }}"
+        members: "{{ ansible_play_hosts_all | product([':', mongodb_port|string]) | map('join') | list  }}"
         login_host: localhost
-        members: "{{ ansible_play_hosts_all | product([':' + mongodb_port]) | map('join') | list  }}"
-          #- mongodb1:27017
-          #- mongodb2:27017
-          #- mongodb3:27017
-      register: create_rs
-      when: inventory_hostname == "mongodb-1"  # when is primary
+        login_user: "{{ mongodb_admin_user }}"
+        login_password: "{{ mongodb_admin_pwd }}"
+        login_port: "{{ mongodb_port | string }}"  # silence implicit int->str conversion warning
+        login_database: admin
+      register: init_replicaset
+      when:
+        - mongodb_replicaset|bool
+        - inventory_hostname == ansible_play_hosts_all[0]
 
-    - name: Wait for rs config to settle
+    - name: Wait for Replicaset config to settle
       pause:
         seconds: 10
-      when: create_rs.changed
+      when:
+        - mongodb_replicaset|bool
+        - init_replicaset.changed
 
-    - name: Wait for replicaset to converge
+    - name: Wait for Replicaset to converge
       community.mongodb.mongodb_status:
-        replica_set: rs0
+        replica_set: "{{ mongodb_replicaset_name }}"
         poll: 10
         interval: 10
-      register: rs
+      register: replicaset
+      when:
+        - mongodb_replicaset|bool
 
-    - debug:
-        var: rs
-
+    - name: Print replicaset details
+      debug:
+        var: replicaset
+      when:
+        - mongodb_replicaset|bool
 
 - name: ST2 Infrastructure | Install RabbitMQ for StackStorm Message Broker
   hosts: "{{ rmq_hosts | default('all') }}"
