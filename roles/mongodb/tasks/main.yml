@@ -39,6 +39,7 @@
     bind_ip: "{{ mongodb_bind_ip | default('127.0.0.1') }}"
     mongod_port: "{{ mongodb_port | default(27017) }}"
     replicaset: "{{ mongodb_replicaset | default(false) }}"
+    repl_set_name: "{{ mongodb_replicaset_name | default('st2') }}"
     sharding: "{{ mongodb_sharding | default(false) }}"
     authorization: "{{ mongodb_authorization | default('enabled') }}"
   tags: [databases, mongodb]

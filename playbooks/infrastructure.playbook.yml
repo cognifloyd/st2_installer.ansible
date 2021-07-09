@@ -14,14 +14,28 @@
     - community.mongodb
   vars:
     # TODO: What to do about st2_config var?
-    mongodb_bind_ip: '{{ st2_config.database.host | default("127.0.0.1") }}'
-    mongodb_port: '{{ st2_config.database.port | default("27017") }}'
     mongodb_authorization: "enabled"
     # Should set mongodb_admin_pwd in inventory
     mongodb_default_admin_pwd: "{{ st2_config.database.password }}"
-    mongodb_replicaset_name: st2
 
   pre_tasks:
+    # these vars are not defined in `vars:` so that inventory/groups vars take precedence when set.
+
+    - name: Set mongodb_bind_ip var if not set
+      when: mongodb_bind_ip is not defined
+      set_fact:
+        mongodb_bind_ip: '{{ st2_config.database.host | default("127.0.0.1") }}'
+
+    - name: Set mongodb_port var if not set
+      when: mongodb_port is not defined
+      set_fact:
+        mongodb_port: '{{ st2_config.database.port | default("27017") }}'
+
+    - name: Set replicaset_name var if not set
+      when: mongodb_replicaset_name is not defined
+      set_fact:
+        mongodb_replicaset_name: st2
+
     - name: Set replicaset var if not set
       when: mongodb_replicaset is not defined
       set_fact:
@@ -40,6 +54,7 @@
             user: "{{ st2_config.database.username }}"
             pwd: "{{ st2_config.database.password }}"
             roles: readWrite,dbAdmin
+
   roles:
     - name: Mongo | Main DB for StackStorm
       role: mongodb
