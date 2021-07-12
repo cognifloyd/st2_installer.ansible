@@ -17,6 +17,7 @@ readme: README.md
 # @nicks:irc/im.site#channel'
 authors:
 - Jacob Floyd <cognifloyd@gmail.com>
+- armab
 
 
 ### OPTIONAL but strongly recommended
@@ -35,11 +36,21 @@ license_file: ''
 # A list of tags you want to associate with the collection for indexing/searching. A tag name has the same character
 # requirements as 'namespace' and 'name'
 tags:
+  - system
+  - ops
+  - devops
+  - chatops
+  - automation
+  - remediation
+  - workflows
+  - orquesta
+  - stackstorm
   - st2
-  - StackStorm
-  - DevOps
-  - Workflows
-  - Orquesta
+  - st2web
+  - st2chatops
+  - rabbitmq
+  - mongodb
+  - nginx
 
 # Collections that this collection requires to be installed for it to be usable. The key of the dict is the
 # collection label 'namespace.name'. The value is a version range

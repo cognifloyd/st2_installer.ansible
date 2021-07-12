@@ -18,6 +18,5 @@ galaxy_info:
   galaxy_tags:
     - system
 dependencies:
-  - role: StackStorm.nginx
   - role: StackStorm.st2repo
   - role: StackStorm.st2
