@@ -12,7 +12,7 @@
   # Disable warning as yum doesn't support enable module
   tags: [rabbitmq, skip_ansible_lint]
 
-- name: Install rabbitmy/erlang from packagecloud for RH 8
+- name: Install rabbitmq/erlang from packagecloud for RHEL
   become: yes
   no_log: yes
   yum_repository:
@@ -26,10 +26,10 @@
     gpgcheck: no
     enabled: yes
     sslverify: yes
-  when: rabbitmq_on_el8
+  when: ansible_facts.os_family == 'RedHat'
   tags: rabbitmq
 
-- name: Install latest rabbitmq erlang package on {{ ansible_facts.distribution }}
+- name: Install latest rabbitmq erlang package on RHEL
   become: yes
   package:
     name: erlang
@@ -38,10 +38,10 @@
   retries: 5
   delay: 3
   until: _eltask is succeeded
-  when: rabbitmq_on_el8
+  when: ansible_facts.os_family == 'RedHat'
   tags: rabbitmq
 
-- name: Install rabbit from packagecloud for RH 8
+- name: Install rabbit from packagecloud for RHEL
   become: yes
   no_log: yes
   yum_repository:
@@ -55,7 +55,7 @@
     gpgcheck: no
     enabled: yes
     sslverify: yes
-  when: rabbitmq_on_el8
+  when: ansible_facts.os_family == 'RedHat'
   tags: rabbitmq
 
 - name: Install latest rabbitmq package on {{ ansible_facts.distribution }}
@@ -96,12 +96,13 @@
 
 - name: Add RabbitMQ plugins
   become: yes
+  # This does not work with rabbitmq 3.3.5 (in EPEL7). It uses a feature in 3.4.0+
   community.rabbitmq.rabbitmq_plugin:
     names: "{{ rabbitmq_plugins|join(',') }}"
     state: enabled
     # new_only: no = Remove all plguins that aren't listed in rabbitmq_plugins
     new_only: no
-  when: rabbitmq_plugins | bool
+  when: rabbitmq_plugins | length > 0
   tags: rabbitmq
 
 - name: Add/Remove RabbitMQ vhosts
