@@ -7,6 +7,10 @@
       become: yes
   tags: [databases, mongodb]
 
+- name: Override mongdb_version defaults in included mongodb_* roles
+  set_fact:
+    mongodb_version: "{{ mongodb_version }}"
+
 - name: Install MongoDB Repository
   include_role:
     name: community.mongodb.mongodb_repository
