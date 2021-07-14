@@ -13,8 +13,6 @@
     apply:
       tags: [databases, mongodb]
       become: yes
-  vars:
-     mongodb_version: "{{ mongodb_major_minor_version }}"
   tags: [databases, mongodb]
 
 - name: Install mongodb-org
@@ -23,9 +21,6 @@
     apply:
       tags: [databases, mongodb]
       become: yes
-  vars:
-     specific_mongodb_version: "{{ mongodb_version }}*"
-     mongodb_version: "{{ mongodb_major_minor_version }}"
   tags: [databases, mongodb]
 
 - name: Configure and Start mongod
