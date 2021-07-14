@@ -1,7 +1,7 @@
 ---
 - name: Check if EPEL is installed
   stat:
-    zath: "{{ epel_repo_file }}"
+    path: "{{ epel_repo_file }}"
   register: epel_installed
   when: ansible_facts.os_family == "RedHat"
   tags: epel
