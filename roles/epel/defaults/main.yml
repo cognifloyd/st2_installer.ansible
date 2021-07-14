@@ -1,0 +1,5 @@
+---
+# These are configurable for those with private epel mirrors.
+epel_repo_file: /etc/yum.repos.d/epel.repo
+epel_rpm_key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts.distribution_major_version }}"
+epel_rpm: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts.distribution_major_version }}.noarch.rpm"
