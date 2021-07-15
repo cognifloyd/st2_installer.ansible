@@ -27,7 +27,6 @@
 
 - name: Install rabbitmq/erlang from packagecloud for RHEL
   become: yes
-  no_log: yes
   yum_repository:
     name: rabbitmq_erlang
     description: rabbitmq_erlang
@@ -58,7 +57,6 @@
 
 - name: Install rabbit from packagecloud for RHEL
   become: yes
-  no_log: yes
   yum_repository:
     name: rabbitmq-server
     description: rabbitmq-server
