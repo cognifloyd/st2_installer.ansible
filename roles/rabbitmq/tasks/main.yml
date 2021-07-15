@@ -24,7 +24,7 @@
     repo_gpgcheck: yes
     gpgkey: "https://packagecloud.io/rabbitmq/erlang/gpgkey"
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
-    metadata_expire: 300
+    metadata_expire: "300"
     gpgcheck: no
     enabled: yes
     sslverify: yes
@@ -53,7 +53,7 @@
     repo_gpgcheck: yes
     gpgkey: "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
-    metadata_expire: 300
+    metadata_expire: "300"
     gpgcheck: no
     enabled: yes
     sslverify: yes
