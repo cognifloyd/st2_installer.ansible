@@ -61,7 +61,7 @@ jobs:
 
       - name: Copy Collections Cache for access in docker
         if: steps.cache.outputs.cache-hit == 'true'
-        run: cp -r /home/runner/.ansible/ /home/runner/work/_temp/_github_home/
+        run: sudo cp -r /home/runner/.ansible/ /home/runner/work/_temp/_github_home/
 
       - name: Install Collection Dependencies on cache-miss
         if: steps.cache.outputs.cache-hit != 'true'
