@@ -37,6 +37,16 @@
   notify: restart redis
   tags: redis
 
+- name: Update redis password for AUTH access
+  become: yes
+  lineinfile:
+    dest: "{{ redis_conf_path }}"
+    line: "requirepass {{ redis_auth_password }}"
+    regexp: '^requirepass '
+  notify: restart redis
+  tags: redis
+  when: redis_auth_password | length > 0
+
 - name: Ensure redis service is enabled and running
   become: yes
   service:

@@ -12,3 +12,8 @@ redis_bind_ipv6: "::{% if redis_localhost_only %}1{% endif %}"
 # redis protected mode protects your redis cluster by refusing to serve requests
 # to anything but localhost. If you disable this, make sure to firewall your redis host(s).
 redis_protected_mode: true
+
+# basic redis AUTH password (this not ACLs from redis 6+)
+# This is how you can set this based on your st2_config:
+# redis_auth_password: "{{ st2_config.coordination.url | urlsplit('password') }}"
+redis_auth_password: ""
