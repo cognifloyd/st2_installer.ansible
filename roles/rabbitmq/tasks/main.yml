@@ -58,8 +58,8 @@
 - name: Install rabbit from packagecloud for RHEL
   become: yes
   yum_repository:
-    name: rabbitmq-server
-    description: rabbitmq-server
+    name: rabbitmq_server
+    description: rabbitmq_server
     baseurl: https://packagecloud.io/rabbitmq/rabbitmq-server/el/{{ ansible_facts.distribution_major_version }}/$basearch
     repo_gpgcheck: yes
     gpgkey: |-
