@@ -13,6 +13,7 @@
   when: st2_ldap.backend_kwargs is defined and st2_ldap.backend_kwargs|length > 0
   notify:
     - restart st2auth
+  tags: skip_ansible_lint
 
 - name: Setup st2.conf auth backend_kwargs for LDAP
   become: yes
@@ -28,3 +29,4 @@
   when: st2_ldap.backend_kwargs is defined and st2_ldap.backend_kwargs|length > 0
   notify:
     - restart st2auth
+  tags: skip_ansible_lint

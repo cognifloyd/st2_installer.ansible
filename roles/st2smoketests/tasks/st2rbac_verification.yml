@@ -12,6 +12,7 @@
   notify:
     - restart st2api
     - restart st2stream
+  tags: skip_ansible_lint
 
 - name: Copy smoke tests RBAC roles to /opt/stackstorm/rbac/roles directory
   become: yes
@@ -20,6 +21,7 @@
     dest: /opt/stackstorm/rbac/roles/{{ item.name }}.yaml
     owner: st2
     group: st2
+    mode: 0644
   loop: "{{ smoke_tests_rbac.roles }}"
   when: smoke_tests_rbac.roles is defined
   notify:
@@ -32,6 +34,7 @@
     dest: /opt/stackstorm/rbac/assignments/{{ item.name }}.yaml
     owner: st2
     group: st2
+    mode: 0644
   loop: "{{ smoke_tests_rbac.assignments }}"
   when: smoke_tests_rbac.assignments is defined
   notify:
