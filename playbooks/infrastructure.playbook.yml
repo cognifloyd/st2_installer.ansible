@@ -103,6 +103,9 @@
     - redis
 
   # TODO: Build a cluster if coord_hosts has >1 host
+  vars:
+    # this playbook is for multi-node installs, not standalone.
+    redis_localhost_only: false
   roles:
     - name: Redis | Message Broker for StackStorm
       role: redis
