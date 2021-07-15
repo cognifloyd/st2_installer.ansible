@@ -5,6 +5,7 @@
     - "{{ ansible_facts.os_family | lower }}_{{ ansible_facts.distribution_major_version }}.yml"
     - "{{ ansible_facts.os_family | lower }}.yml"
   ignore_errors: true
+  tags: skip_ansible_lint
 
 - name: auth | Install auth pre-reqs (Debian)
   become: yes
