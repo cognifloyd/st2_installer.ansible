@@ -10,7 +10,7 @@
   until: _task is succeeded
   tags: redis
 
-- name: Allow redis to be controlled by systemd
+- name: Allow redis to be controlled by systemd on Debian/Ubuntu
   become: yes
   lineinfile:
     dest: /etc/redis/redis.conf
