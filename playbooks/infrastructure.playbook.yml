@@ -13,7 +13,6 @@
     - cognifloyd.st2_installer
     - community.mongodb
   vars:
-    # TODO: What to do about st2_config var?
     mongodb_authorization: "enabled"
     # Should set mongodb_admin_pwd in inventory
     mongodb_default_admin_pwd: "{{ st2_config.database.password }}"
@@ -71,8 +70,6 @@
   collections:
     - cognifloyd.st2_installer
     - community.rabbitmq
-  # vars:
-    # TODO: What to do about st2_config var?
 
   # TODO: Build a cluster if rmq_hosts has >1 host
   pre_tasks:
