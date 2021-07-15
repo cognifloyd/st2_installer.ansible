@@ -23,7 +23,7 @@
   become: yes
   lineinfile:
     dest: "{{ redis_conf_path }}"
-    line: "bind {{ redis_bind_ipv4 }}{% if ansible_facts["all_ipv6_addresses"] | length > 0 %} {{ redis_bind_ipv6}}{% endif %}"
+    line: "bind {{ redis_bind_ipv4 }}{% if ansible_facts['all_ipv6_addresses'] | length > 0 %} {{ redis_bind_ipv6}}{% endif %}"
     regexp: '^bind '
   notify: restart redis
   tags: redis
