@@ -19,15 +19,14 @@
   tags: redis
   when: ansible_facts.os_family == 'Debian'
 
-- name: Change bind to be ipv4 only if needed
+- name: Update redis bind (includes ipv6 only if host has ipv6 addresses)
   become: yes
   lineinfile:
     dest: "{{ redis_conf_path }}"
-    line: "bind 127.0.0.1"
+    line: "bind {{ redis_bind_ipv4 }}{% if ansible_facts["all_ipv6_addresses"] | length > 0 %} {{ redis_bind_ipv6}}{% endif %}"
     regexp: '^bind '
   notify: restart redis
   tags: redis
-  when: (ansible_facts["all_ipv6_addresses"] | length == 0)
 
 - name: Ensure redis service is enabled and running
   become: yes

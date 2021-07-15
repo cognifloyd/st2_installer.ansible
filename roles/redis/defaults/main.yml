@@ -1,2 +1,10 @@
 ---
 redis_conf_path: "{{ '/etc/redis.conf' if ansible_facts.os_family == 'RedHat' else '/etc/redis/redis.conf' }}"
+
+# By default, assume that we are doing a standalone install on the same host as st2.
+# Set to false if redis and st2 are on different hosts.
+redis_localhost_only: true
+
+# override these to restrict which IPs will be bound
+redis_bind_ipv4: "{% if redis_localhost_only %}127.0.0.1{% else %}0.0.0.0{% endif %}"
+redis_bind_ipv6: "::{% if redis_localhost_only %}1{% endif %}"
