@@ -14,6 +14,17 @@
 
 # TODO: if ancient EPEL7-provided rabbitmq-server or erlang-erts are installed, we need to remove them first.
 
+- name: Install rabbitmq/erlang rpm signing gpg keys for RHEL
+  become: yes
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  loop:
+    - "https://packagecloud.io/rabbitmq/erlang/gpgkey"
+    - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
+  when: ansible_facts.os_family == 'RedHat'
+  tags: rabbitmq
+
 - name: Install rabbitmq/erlang from packagecloud for RHEL
   become: yes
   no_log: yes
@@ -22,10 +33,12 @@
     description: rabbitmq_erlang
     baseurl: https://packagecloud.io/rabbitmq/erlang/el/{{ ansible_facts.distribution_major_version }}/$basearch
     repo_gpgcheck: yes
-    gpgkey: "https://packagecloud.io/rabbitmq/erlang/gpgkey"
+    gpgkey: |-
+      https://packagecloud.io/rabbitmq/erlang/gpgkey
+      https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
     metadata_expire: "300"
-    gpgcheck: no
+    gpgcheck: yes
     enabled: yes
     sslverify: yes
   when: ansible_facts.os_family == 'RedHat'
@@ -51,10 +64,12 @@
     description: rabbitmq-server
     baseurl: https://packagecloud.io/rabbitmq/rabbitmq-server/el/{{ ansible_facts.distribution_major_version }}/$basearch
     repo_gpgcheck: yes
-    gpgkey: "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
+    gpgkey: |-
+      https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+      https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
     metadata_expire: "300"
-    gpgcheck: no
+    gpgcheck: yes
     enabled: yes
     sslverify: yes
   when: ansible_facts.os_family == 'RedHat'
