@@ -12,6 +12,8 @@
   # Disable warning as yum doesn't support enable module
   tags: [rabbitmq, skip_ansible_lint]
 
+# TODO: if ancient EPEL7-provided rabbitmq-server or erlang-erts are installed, we need to remove them first.
+
 - name: Install rabbitmq/erlang from packagecloud for RHEL
   become: yes
   no_log: yes
