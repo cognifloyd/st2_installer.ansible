@@ -65,7 +65,9 @@
   changed_when: no
   ignore_errors: true
   register: task_apikey_not_exists
-  tags: st2chatops
+  tags:
+    - st2chatops
+    - ansible_skip_lint
 
 - name: Add user defined "st2chatops_st2_api_key" in st2chatops.env, from "role" or "defaults/main.yml"
   become: yes
