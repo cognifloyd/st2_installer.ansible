@@ -77,6 +77,7 @@
   changed_when: no
   notify:
     - reload rbac
+  tags: skip_ansible_lint
 
 - name: Remove RBAC smoke tests roles  # This doesn't cleanup role from DB.
   become: yes
