@@ -12,6 +12,8 @@
   collections:
     - cognifloyd.st2_installer
     - community.mongodb
+  tags:
+    - mongodb
   vars:
     mongodb_authorization: "enabled"
     # Should set mongodb_admin_pwd in inventory
@@ -70,6 +72,8 @@
   collections:
     - cognifloyd.st2_installer
     - community.rabbitmq
+  tags:
+    - rabbitmq
 
   # TODO: Build a cluster if rmq_hosts has >1 host
   pre_tasks:
@@ -95,8 +99,10 @@
   collections:
     - cognifloyd.st2_installer
     #- community.redis
+  tags:
+    - redis
 
   # TODO: Build a cluster if coord_hosts has >1 host
   roles:
     - name: Redis | Message Broker for StackStorm
-      role: rabbitmq
+      role: redis
