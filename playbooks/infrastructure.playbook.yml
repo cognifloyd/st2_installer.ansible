@@ -75,7 +75,7 @@
   tags:
     - rabbitmq
 
-  # TODO: Build a cluster if rmq_hosts has >1 host
+  # TODO: Build a cluster if rmq_hosts has >1 host (nginx stream loadbalancer + ha hosts)
   pre_tasks:
     - name: Configure rabbitmq_users if needed
       when: rabbitmq_users is not defined
@@ -102,7 +102,10 @@
   tags:
     - redis
 
-  # TODO: Build a cluster if coord_hosts has >1 host
+  # TODO: Build a cluster if coord_hosts has >1 host (load balancer port 6379; hosts port 6380)
+  #       using redis-sentinel: https://redis.io/topics/sentinel
+  # TODO: install redis 6+ (3.2.12 in EPEL7)
+  # TODO: redis ACL for redis 6+ (includes username and password)
   vars:
     # this playbook is for multi-node installs, not standalone.
     redis_localhost_only: false
