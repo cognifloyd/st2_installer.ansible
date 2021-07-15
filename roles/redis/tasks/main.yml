@@ -28,6 +28,15 @@
   notify: restart redis
   tags: redis
 
+- name: Update redis protected-mode
+  become: yes
+  lineinfile:
+    dest: "{{ redis_conf_path }}"
+    line: "protected-mode {% if redis_protected_mode %}yes{% else %}no{% endif %}"
+    regexp: '^protected-mode '
+  notify: restart redis
+  tags: redis
+
 - name: Ensure redis service is enabled and running
   become: yes
   service:

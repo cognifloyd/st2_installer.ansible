@@ -8,3 +8,7 @@ redis_localhost_only: true
 # override these to restrict which IPs will be bound
 redis_bind_ipv4: "{% if redis_localhost_only %}127.0.0.1{% else %}0.0.0.0{% endif %}"
 redis_bind_ipv6: "::{% if redis_localhost_only %}1{% endif %}"
+
+# redis protected mode protects your redis cluster by refusing to serve requests
+# to anything but localhost. If you disable this, make sure to firewall your redis host(s).
+redis_protected_mode: true
