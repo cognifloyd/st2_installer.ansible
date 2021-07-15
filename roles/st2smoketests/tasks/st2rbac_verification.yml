@@ -40,7 +40,8 @@
   notify:
     - reload rbac
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
 
 - name: Get authentication token for rbac_smoke_tests  # Note this will not use LDAP.
   command: st2 auth "{{ smoke_tests_rbac_user }}" -p "{{ smoke_tests_rbac_password }}"  -t

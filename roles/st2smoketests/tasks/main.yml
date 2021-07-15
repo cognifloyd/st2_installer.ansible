@@ -1,7 +1,8 @@
 ---
 # Small suite of smoke tests to execute to ensure that the playbook has deployed as expected
 
-- meta: flush_handlers
+- name: Flush Handlers
+  meta: flush_handlers
   tags:
     - smoke-tests
 
