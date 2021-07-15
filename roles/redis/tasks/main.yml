@@ -15,6 +15,7 @@
   lineinfile:
     dest: "{{ redis_conf_path }}"
     line: supervised systemd
+  notify: restart redis
   tags: redis
   when: ansible_facts.os_family == 'Debian'
 
@@ -24,6 +25,7 @@
     dest: "{{ redis_conf_path }}"
     line: "bind 127.0.0.1"
     regexp: '^bind '
+  notify: restart redis
   tags: redis
   when: (ansible_facts["all_ipv6_addresses"] | length == 0)
 
