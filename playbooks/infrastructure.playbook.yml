@@ -59,12 +59,6 @@
   roles:
     - name: Mongo | Main DB for StackStorm
       role: mongodb
-  tasks:
-    - name: Mongo | initiate replicaset
-      when: mongodb_replicaset|bool
-      include_role:
-        name: mongodb
-        tasks_from: replicaset
 
 - name: ST2 Infrastructure | Install RabbitMQ for StackStorm Message Broker
   hosts: "{{ rmq_hosts | default('all') }}"

@@ -60,6 +60,11 @@
     state: "forcereinstall"
   tags: [databases, mongodb]
 
+- name: Initiate replicaset
+  when: mongodb_replicaset|bool
+  include_tasks: replicaset.yml
+  tags: [databases, mongodb]
+
 - name: Configure mongod authentication and add users
   include_role:
     name: community.mongodb.mongodb_auth
