@@ -5,8 +5,8 @@
     cmd: yum info python3-devel
   changed_when: false
   register: _rpm_check
-  args:
-     warn: False
+  #args:
+  #   warn: False
   ignore_errors: yes
   when: ansible_facts.os_family == 'RedHat' and ansible_facts.distribution_major_version == '7'
   # Disable warning as yum doesn't support info
@@ -18,8 +18,8 @@
     cmd: yum repolist disabled 2> /dev/null | awk -F'/' '/rhel-7-server-rhui-optional-rpms|rhui-REGION-rhel-server-optional|rhel-7-server-optional-rpms/{print $1}'
   changed_when: false
   register: _reponame
-  args:
-     warn: False
+  #args:
+  #   warn: False
   when: ansible_facts.os_family == 'RedHat' and ansible_facts.distribution_major_version == '7' and _rpm_check.rc != 0
   # Disable warning as yum doesn't support repolist
   tags: st2, skip_ansible_lint

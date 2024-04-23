@@ -7,6 +7,7 @@
 
 - name: Initialize MongoDB Replicaset
   community.mongodb.mongodb_replicaset:
+    # TODO: this module seems to be failing to login correctly. Probably an issue with the older version of the collection.
     replica_set: "{{ mongodb_replicaset_name }}"
     # this needs the fqdn, not a host shortname
     members: "{{ ansible_play_hosts_all | product([':'], [mongodb_port|string]) | map('join') | list  }}"

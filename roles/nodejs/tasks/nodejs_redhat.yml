@@ -25,8 +25,8 @@
      cmd: yum module list nodejs --disabled
   changed_when: False
   ignore_errors: True
-  args:
-     warn: False
+  #args:
+  #   warn: False
   register: nodejs_disabled
   when: ansible_facts.os_family == 'RedHat' and ansible_facts.distribution_major_version == '8'
   tags: [nodejs, skip_ansible_lint]
